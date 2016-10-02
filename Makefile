@@ -7,7 +7,7 @@ LFLAGS = -N -Ttext=0x10000
 
 all:main.elf
 
-main.elf:main.o
+main.elf:main.o bootstrap.o
 
 .c.o:
 	$(CC) -c $(CFLAGS) -o $@ $^
@@ -15,6 +15,10 @@ main.elf:main.o
 .SUFFIXES: .o .elf
 .o.elf:
 	$(LD) $(LFLAGS)	-o $@ $^
+	
+.SUFFIXES: .s .o
+.s.o:
+	$(CC) -c $(CFLAGS) -o $@ $^	
 	
 clean:
 	rm *.o
