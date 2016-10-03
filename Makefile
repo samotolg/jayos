@@ -9,11 +9,11 @@ all:main.elf
 
 main.elf:main.o
 
-.o.c:
+.c.o:
 	$(CC) -c $(CFLAGS) -o $@ $^
 
 .SUFFIXES: .o .elf
-.o.elf:
+.o.elf:main.o
 	$(LD) $(LFLAGS)	-o $@ $^
 	
 clean:
