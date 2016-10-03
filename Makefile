@@ -1,13 +1,13 @@
 CC = /usr/local/arm-2008q3/bin/arm-none-eabi-gcc
 LD = /usr/local/arm-2008q3/bin/arm-none-eabi-ld
 
-CFLAGS = -march=armv6 
+CFLAGS = -Wall -Wextra -march=armv6 -fPIC -marm
 
-LFLAGS = -N -Ttext=0x10000
+FLAGS = -N -Ttext=0x10000
 
 all:main.elf
 
-main.elf:main.o bootstrap.o
+main.elf:bootstrap.o exception_handlers.o main.o utils.o
 
 .c.o:
 	$(CC) -c $(CFLAGS) -o $@ $^
