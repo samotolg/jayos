@@ -1,12 +1,12 @@
-CC = /usr/local/arm-2008q3/bin/arm-none-eabi-gcc
-LD = /usr/local/arm-2008q3/bin/arm-none-eabi-ld
+CC = /usr/local/gcc-arm-none-eabi-5_4-2016q2/bin/arm-none-eabi-gcc
+LD = /usr/local/gcc-arm-none-eabi-5_4-2016q2/bin/arm-none-eabi-ld
 
 CFLAGS = -Wall -Wextra -march=armv6 -fPIC -marm
 LFLAGS = -N -Ttext=0x10000
 
 all:main.elf
 
-main.elf:bootstrap.o exception_handlers.o main.o utils.o
+main.elf:bootstrap.o exception_handlers.o main.o utils.o jayos.o jayosarm.o
 
 .SUFFIXES: .c .o
 .c.o:
