@@ -19,7 +19,7 @@ reset_handler:
 		ldr 	r1, =irq_stack_top;
 		ldr		sp, [r1]
 		
-		msr 	cpsr_c, PSR_CLEAR|PSR_SVC_MODE	/* back to svc mode and enable IRQ/FIQ */
+		msr 	cpsr_c, PSR_CLEAR  |PSR_SVC_MODE	/* back to svc mode and enable IRQ/FIQ */
 		bl		main
 				
 irq_handler:

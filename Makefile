@@ -6,7 +6,7 @@ LFLAGS = -N -Ttext=0x10000
 
 all:main.elf
 
-main.elf:bootstrap.o exception_handlers.o main.o utils.o jayos.o jayosarm.o
+main.elf:bootstrap.o exception_handlers.o main.o utils.o fos.o fosarm.o
 
 .SUFFIXES: .c .o
 .c.o:
