@@ -30,23 +30,6 @@ bool										os_enable_rr;
 u32											os_err_count;
 
 /******************************************************************************
-                      Stack Address
-******************************************************************************/
-#define SVC_STACK_SIZ				256
-#define IRQ_STACK_SIZ				1024
-#define EXP_STACK_SIZ				32
-
-u32 svc_stack[SVC_STACK_SIZ];
-u32 irq_stack[IRQ_STACK_SIZ];
-u32	exp_stack[EXP_STACK_SIZ];
-
-u32 *svc_stack_top = (u32 *)(svc_stack + (SVC_STACK_SIZ - 1) * 4);
-u32 *irq_stack_top = (u32 *)(irq_stack + (IRQ_STACK_SIZ - 1) * 4);
-u32 *exp_stack_top = (u32 *)(exp_stack + (EXP_STACK_SIZ - 1) * 4);
-
-
-
-/******************************************************************************
                       Function Prototype Declaration
 ******************************************************************************/
 void 			os_timer_expired(int param);
@@ -84,7 +67,7 @@ void os_init()
 	}
 	os_idle_timer_list					= &os_timer[0];
 	os_active_timer_count				= 0;
-	os_hw_timer_init();
+	os_timer_init();
 	os_timer_count						= 0;
 	os_schedule_lock					= 0;
 #ifdef OS_SCHEDULE_ROUND_ROBIN
@@ -105,7 +88,7 @@ void os_init()
 void os_start()
 {
 	os_status = OS_RUN;
-//	os_hw_timer_start();
+	os_timer_start();
 	
 	os_set_best_task();
 #ifdef OS_SCHEDULE_ROUND_ROBIN

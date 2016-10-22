@@ -1,6 +1,6 @@
 #include <stdarg.h>
 
-extern int uart_putc_poll(char c);
+extern void uart_putc_poll(char c);
 extern int d_vsprintf(char *buf, const char *fmt, va_list args);
 
 

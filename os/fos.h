@@ -1,9 +1,9 @@
 #ifndef JAYOS_H
 #define JAYOS_H
 
-#include "bsp.h"
 #include "fos_config.h"
-#include "rtos_type.h"
+#include "bsp.h"
+#include "fos_timer.h"
 
 #define OS_TCB_SIZE
 #define OS_TCB_OFFSET_SP					0
@@ -108,16 +108,6 @@ typedef struct os_mutex_struct {
 extern void 	os_schedule();
 extern u32		os_int_lock();
 extern u32		os_int_free();
-
-extern void 	os_hw_timer_start();
-extern void 	os_hw_timer_init();
-extern u32 		os_hw_timer_get_count(u8 ch);
-extern u32 		os_hw_timer_get_global_count();
-extern void 	os_hw_timer_enable(u8 ch, u32 count, void (*timer_cb)(int));
-extern void 	os_hw_timer_disable(u8 ch);
-extern void 	os_hw_timer_clear_sig(u8 ch);
-extern void 	os_hw_timer_pause(u8 ch);
-extern void 	os_hw_timer_resume(u8 ch);
 
 
 /******************************************************************************

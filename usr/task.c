@@ -1,4 +1,3 @@
-#include "rtos_type.h"
 #include "fos.h"
 #include "fos_timer.h"
 #include "os_sem.h"

@@ -1,40 +1,43 @@
 #include "fos_timer.h"
+#include "hw_timer.h"
 
 
-
-void os_hw_timer_init()
+void os_timer_init()
 {
-	*(PIC + VIC_INTENABLE) = PIC_TIMER01;
+	os_hw_timer_init();
 }
 
-u32 os_hw_timer_get_count(u8 ch)
+void os_timer_start()
 {
-	return *(volatile unsigned int *)(TIMER_VALUE(ch));
+	os_hw_timer_start();
 }
 
-void os_hw_timer_enable(u8 ch, u32 time, timer_cb_func_type func)
+u32 os_timer_get_count(u8 ch)
 {
-	*(volatile unsigned int *)(TIMER_LOAD(ch)) = time;
-	*(volatile unsigned int *)(TIMER_CONTROL(ch)) = TIMER_EN | TIMER_ONESHOT | TIMER_32BIT | TIMER_INTEN;
-	os_timer_cb[ch] = func;
+	return os_hw_timer_get_count(ch);
 }
 
-void os_hw_timer_disable(u8 ch)
+void os_timer_enable(u8 ch, u32 time, timer_cb_func_type func)
 {
-	*(volatile unsigned int *)(TIMER_CONTROL(ch)) = TIMER_ONESHOT | TIMER_32BIT;
+	os_hw_timer_enable(ch, time, func);
 }
 
-void os_hw_timer_pause(u8 ch)
+void os_timer_disable(u8 ch)
 {
-	*(volatile unsigned int *)(TIMER_CONTROL(ch)) = TIMER_ONESHOT | TIMER_32BIT;
+	os_hw_timer_disable(ch);
 }
 
-void os_hw_timer_resume(u8 ch)
+void os_timer_pause(u8 ch)
 {
-	*(volatile unsigned int *)(TIMER_CONTROL(ch)) = TIMER_EN | TIMER_ONESHOT | TIMER_32BIT | TIMER_INTEN;
+	os_hw_timer_pause(ch);
 }
 
-u32 os_hw_timer_get_global_count()
+void os_timer_resume(u8 ch)
+{
+	os_hw_timer_resume(ch);
+}
+
+u32 os_timer_get_global_count()
 {
 	return 1;
 }

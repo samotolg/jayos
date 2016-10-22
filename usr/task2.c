@@ -2,12 +2,12 @@
    threads of different priorities, using a message queue, semaphore, mutex, event flags group, 
    byte pool, and block pool.  */
 
-#include   "fos.h"
+#include   	"fos.h"
 #include 	"os_sem.h"
 #include	"os_mutex.h"
 #include 	"fos_timer.h"
 
-#define     DEMO_STACK_SIZE         1024
+#define     DEMO_STACK_SIZE         2048
 #define     DEMO_BYTE_POOL_SIZE     9120
 #define     DEMO_BLOCK_POOL_SIZE     100
 #define     DEMO_QUEUE_SIZE          100
@@ -133,9 +133,7 @@ void    thread_0_entry(ULONG thread_input)
         printf("           thread 7 mutex obtained:       %lu\n\n", thread_7_counter);
 
         /* Sleep for 10 ticks.  */
-		os_set_timer(10000, TIMER_SIG);
-		os_wait_sigs(TIMER_SIG);
-		os_clr_sigs(&thread_0, TIMER_SIG);
+		os_delay(10000);
 
         /* Set event flag 0 to wakeup thread 5.  */
 		os_set_sigs(&thread_5, EVENT_SIG);
@@ -219,12 +217,7 @@ UINT    status;
 
         /* Sleep for 2 ticks to hold the semaphore.  */
 //        tx_thread_sleep(2);
-		os_set_timer(2000, TIMER_SIG);
-		os_wait_sigs(TIMER_SIG);
-		if (thread_input == 3)
-			os_clr_sigs(&thread_3, TIMER_SIG);
-		else
-			os_clr_sigs(&thread_4, TIMER_SIG);
+		os_delay(2000);
 
         /* Release the semaphore.  */
 //        status =  tx_semaphore_put(&semaphore_0);
@@ -287,13 +280,7 @@ UINT    status;
 #endif
         /* Sleep for 2 ticks to hold the mutex.  */
 //        tx_thread_sleep(2);
-		os_set_timer(2000, TIMER_SIG);
-		os_wait_sigs(TIMER_SIG);
-		if (thread_input == 6)
-			os_clr_sigs(&thread_6, TIMER_SIG);
-		else
-			os_clr_sigs(&thread_7, TIMER_SIG);
-
+		os_delay(2000);
 
         /* Release the mutex.  */
 //        status =  tx_mutex_put(&mutex_0);

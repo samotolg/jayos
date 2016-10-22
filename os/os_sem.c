@@ -1,5 +1,4 @@
 #include "os_sem.h"
-#include "fos.h"
 
 #ifdef OS_SEMAPHORE
 

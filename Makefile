@@ -28,18 +28,20 @@ INCS	:= -I$(SOURCE_TOP)/include \
 
 OBJS	:= bsp/bootstrap.o	\
 	bsp/exception_handlers.o \
-	bsp/aeabi.o				\
+	util/aeabi.o				\
 	bsp/gic.o				\
 	bsp/uart.o				\
-	bsp/vsprintf.o			\
-	bsp/debug.o				\
+	util/vsprintf.o			\
+	util/debug.o				\
 	usr/main.o				\
-	usr/task2.o				\
+	usr/task.o				\
 	os/fos.o				\
 	os/fosarm.o 			\
 	os/fos_timer.o			\
 	os/os_sem.o				\
-	os/os_mutex.o
+	os/os_mutex.o			\
+	bsp/hw.o				\
+	bsp/hw_timer.o			
 
 OBJS := $(patsubst %.o, $(SOURCE_TOP)/%.o, $(OBJS))
 

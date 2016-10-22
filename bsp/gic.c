@@ -1,3 +1,4 @@
+#include "bsp.h"
 #include "fos_timer.h"
 
 extern timer_cb_func_type 	os_timer_cb[2];

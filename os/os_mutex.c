@@ -1,5 +1,4 @@
 #include "os_mutex.h"
-#include "fos.h"
 
 #ifdef OS_MUTEX
 

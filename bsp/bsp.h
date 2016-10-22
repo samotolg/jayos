@@ -2,7 +2,7 @@
 #define __BSP_H__
 
 #include "rtos_type.h"
-
+#include "versatile_pb.h"
 
 /**
  * Initialize the Interrupt Distributor
@@ -51,13 +51,5 @@ void DisableIRQ(void);
 
 void uart_init(void);
 void printf(const char *fmt,...);
-
-void timer_init(int ch);
-
-void timer_enable(int ch, u32 time, void (*timer_cb)(int));
-
-
-unsigned long get_tick(void);
-
 
 #endif	/* __BSP_H__ */

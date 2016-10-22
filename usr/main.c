@@ -1,7 +1,7 @@
-	#include "bsp.h"
-#include "rtos_type.h"
+#include "bsp.h"
 #include "fos.h"
 #include "fos_timer.h"
+#include "hw.h"
 
 extern void task_init();
 
@@ -37,16 +37,9 @@ void idle_task(u32 param)
 
 void __main(void)
 {
-	/* init uart */
-//	uart_init();
-
-	/* GIC inititialize */
-//	intr_distributor_init();        
-//	intr_interface_init();
-//	EnableIRQ();
+	sys_init();
 
 	os_init();
-	printf("OS initialized!\n");
 	
 	/* Since the OS is built on the premise that there is an idle task 
 	   with lowest priority, it is mandatory to create it. */
@@ -65,7 +58,6 @@ void __main(void)
 
 	/* This function will not return */
 	os_start();
-	printf("OS started!\n");
 
 	while (1); /* Control *MUST NOT* be here */
 }
