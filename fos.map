@@ -1,0 +1,454 @@
+
+Allocating common symbols
+Common symbol       size              file
+
+thread_3_counter    0x4               /home/jay/work/sources/jayos/usr/task2.o
+os_err_count        0x4               /home/jay/work/sources/jayos/os/fos.o
+os_task_ready_list  0x4               /home/jay/work/sources/jayos/os/fos.o
+os_timer            0xc8              /home/jay/work/sources/jayos/os/fos.o
+thread_5_counter    0x4               /home/jay/work/sources/jayos/usr/task2.o
+semaphore_0         0x8               /home/jay/work/sources/jayos/usr/task2.o
+svc_stack           0x400             /home/jay/work/sources/jayos/os/fos.o
+thread_7_counter    0x4               /home/jay/work/sources/jayos/usr/task2.o
+irq_stack           0x1000            /home/jay/work/sources/jayos/os/fos.o
+thread_0_counter    0x4               /home/jay/work/sources/jayos/usr/task2.o
+os_status           0x1               /home/jay/work/sources/jayos/os/fos.o
+thread_2_counter    0x4               /home/jay/work/sources/jayos/usr/task2.o
+thread_4_counter    0x4               /home/jay/work/sources/jayos/usr/task2.o
+os_timer_count      0x4               /home/jay/work/sources/jayos/os/fos.o
+os_active_timer_count
+                    0x1               /home/jay/work/sources/jayos/os/fos.o
+os_active_timer_list
+                    0x4               /home/jay/work/sources/jayos/os/fos.o
+os_idle_timer_list  0x4               /home/jay/work/sources/jayos/os/fos.o
+thread_1_counter    0x4               /home/jay/work/sources/jayos/usr/task2.o
+mutex_0             0x8               /home/jay/work/sources/jayos/usr/task2.o
+os_cur_task         0x4               /home/jay/work/sources/jayos/os/fos.o
+exp_stack           0x80              /home/jay/work/sources/jayos/os/fos.o
+thread_1_messages_sent
+                    0x4               /home/jay/work/sources/jayos/usr/task2.o
+thread_2_messages_received
+                    0x4               /home/jay/work/sources/jayos/usr/task2.o
+thread_6_counter    0x4               /home/jay/work/sources/jayos/usr/task2.o
+os_best_task        0x4               /home/jay/work/sources/jayos/os/fos.o
+os_task_num         0x1               /home/jay/work/sources/jayos/os/fos.o
+os_schedule_lock    0x4               /home/jay/work/sources/jayos/os/fos.o
+os_timer_cb         0x8               /home/jay/work/sources/jayos/bsp/gic.o
+os_enable_rr        0x1               /home/jay/work/sources/jayos/os/fos.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD /home/jay/work/sources/jayos/bsp/bootstrap.o
+LOAD /home/jay/work/sources/jayos/bsp/exception_handlers.o
+LOAD /home/jay/work/sources/jayos/bsp/aeabi.o
+LOAD /home/jay/work/sources/jayos/bsp/gic.o
+LOAD /home/jay/work/sources/jayos/bsp/uart.o
+LOAD /home/jay/work/sources/jayos/bsp/vsprintf.o
+LOAD /home/jay/work/sources/jayos/bsp/debug.o
+LOAD /home/jay/work/sources/jayos/usr/main.o
+LOAD /home/jay/work/sources/jayos/usr/task2.o
+LOAD /home/jay/work/sources/jayos/os/fos.o
+LOAD /home/jay/work/sources/jayos/os/fosarm.o
+LOAD /home/jay/work/sources/jayos/os/fos_timer.o
+LOAD /home/jay/work/sources/jayos/os/os_sem.o
+LOAD /home/jay/work/sources/jayos/os/os_mutex.o
+                0x00010000                . = 0x10000
+                0x00010000                . = ALIGN (0x4)
+                0x00010000                __text_start = .
+
+.text           0x00010000     0x2698
+ *(.text)
+ .text          0x00010000       0x70 /home/jay/work/sources/jayos/bsp/bootstrap.o
+                0x00010000                _start
+ .text          0x00010070      0x198 /home/jay/work/sources/jayos/bsp/exception_handlers.o
+                0x00010070                reset_handler
+                0x000100d8                EnableIRQ
+                0x000100f4                DisableIRQ
+                0x00010110                irq_handler
+ .text          0x00010208      0x3d4 /home/jay/work/sources/jayos/bsp/aeabi.o
+                0x00010208                __udivsi3
+                0x00010208                __aeabi_uidiv
+                0x000102f0                __umodsi3
+                0x000103ac                __aeabi_idiv
+                0x000103ac                __divsi3
+                0x000104c4                __modsi3
+                0x00010598                __aeabi_uidivmod
+                0x000105b0                __aeabi_idivmod
+                0x000105d8                __div0
+ .text          0x000105dc      0x2b4 /home/jay/work/sources/jayos/bsp/gic.o
+                0x000105dc                intr_distributor_init
+                0x0001068c                intr_fiq_handler
+                0x00010690                intr_irq_handler
+                0x000106e8                intr_setup_isr
+                0x000106ec                intr_target_set
+                0x00010728                intr_target_get
+                0x00010750                intr_clear
+                0x00010774                intr_enable
+                0x00010798                intr_disable
+                0x000107bc                intr_disable_all
+                0x000107d8                intr_interface_init
+                0x00010864                gic_enabled
+                0x00010878                intr_sgi_send
+ .text          0x00010890       0x68 /home/jay/work/sources/jayos/bsp/uart.o
+                0x00010890                uart_init
+                0x000108bc                uart_getc_poll
+                0x000108d8                uart_putc_poll
+ .text          0x000108f8      0x6f4 /home/jay/work/sources/jayos/bsp/vsprintf.o
+                0x00010bac                prnt_strnlen
+                0x00010bd0                d_vsprintf
+                0x00010fc4                sprintf
+ .text          0x00010fec       0x5c /home/jay/work/sources/jayos/bsp/debug.o
+                0x00010fec                printf
+ .text          0x00011048       0x74 /home/jay/work/sources/jayos/usr/main.o
+                0x00011048                idle_task
+                0x0001104c                __main
+ .text          0x000110bc      0x3c0 /home/jay/work/sources/jayos/usr/task2.o
+                0x000110bc                thread_5_entry
+                0x000110f0                thread_0_entry
+                0x00011208                thread_3_and_4_entry
+                0x00011284                thread_6_and_7_entry
+                0x00011300                task_init
+ .text          0x0001147c      0xa64 /home/jay/work/sources/jayos/os/fos.o
+                0x0001147c                os_task_start
+                0x00011490                os_switching_rr
+                0x000114f4                os_init
+                0x000115c8                os_insert_to_ready_list
+                0x000116bc                os_remove_from_ready_list
+                0x00011854                os_set_best_task
+                0x000118c0                os_start
+                0x00011938                os_create_task
+                0x00011a14                os_clr_sigs
+                0x00011a44                os_get_cur_task
+                0x00011a54                os_enable_timer
+                0x00011a68                os_disable_timer
+                0x00011a70                os_insert_timer_to_active_list
+                0x00011ba8                os_set_timer
+                0x00011c24                os_set_status
+                0x00011d08                os_wait_sigs
+                0x00011d64                os_set_sigs
+                0x00011db8                os_timer_expired
+                0x00011e38                os_delay
+ .text          0x00011ee0       0xbc /home/jay/work/sources/jayos/os/fosarm.o
+                0x00011ee0                os_schedule
+                0x00011f68                os_int_lock
+                0x00011f7c                os_int_free
+ .text          0x00011f9c       0x8c /home/jay/work/sources/jayos/os/fos_timer.o
+                0x00011f9c                os_hw_timer_init
+                0x00011fb0                os_hw_timer_get_count
+                0x00011fc4                os_hw_timer_enable
+                0x00011fec                os_hw_timer_pause
+                0x00012004                os_hw_timer_disable
+                0x00012008                os_hw_timer_resume
+                0x00012020                os_hw_timer_get_global_count
+ .text          0x00012028      0x2fc /home/jay/work/sources/jayos/os/os_sem.o
+                0x00012028                os_sem_init
+                0x00012088                os_sem_getvalue
+                0x00012090                os_sem_wait
+                0x000121f8                os_sem_trywait
+                0x00012264                os_sem_post
+ .text          0x00012324      0x374 /home/jay/work/sources/jayos/os/os_mutex.o
+                0x00012324                os_mutex_init
+                0x00012394                os_mutex_wait
+                0x00012544                os_mutex_post
+                0x00012698                __text_end = .
+
+.glue_7         0x00012698        0x0
+ .glue_7        0x00012698        0x0 linker stubs
+
+.glue_7t        0x00012698        0x0
+ .glue_7t       0x00012698        0x0 linker stubs
+
+.vfp11_veneer   0x00012698        0x0
+ .vfp11_veneer  0x00012698        0x0 linker stubs
+
+.v4_bx          0x00012698        0x0
+ .v4_bx         0x00012698        0x0 linker stubs
+
+.iplt           0x00012698        0x0
+ .iplt          0x00012698        0x0 /home/jay/work/sources/jayos/bsp/bootstrap.o
+                0x00012698                . = ALIGN (0x4)
+                0x00012698                __rodata_start = .
+
+.rodata         0x00012698      0x454
+ *(SORT(.rodata*))
+ .rodata        0x00012698       0x10 /home/jay/work/sources/jayos/bsp/vsprintf.o
+ .rodata.str1.1
+                0x000126a8       0x28 /home/jay/work/sources/jayos/usr/main.o
+ .rodata.str1.1
+                0x000126d0      0x1f3 /home/jay/work/sources/jayos/usr/task2.o
+ .rodata.str1.1
+                0x000128c3      0x139 /home/jay/work/sources/jayos/os/fos.o
+ .rodata.str1.1
+                0x000129fc       0x1c /home/jay/work/sources/jayos/os/os_sem.o
+ .rodata.str1.1
+                0x00012a18       0xd4 /home/jay/work/sources/jayos/os/os_mutex.o
+                0x00012aec                __rodata_end = .
+
+.rel.dyn        0x00012aec        0x0
+ .rel.iplt      0x00012aec        0x0 /home/jay/work/sources/jayos/bsp/bootstrap.o
+                0x00012aec                . = ALIGN (0x4)
+                0x00012aec                __data_start = .
+
+.data           0x00012aec        0xc
+ *(.data)
+ .data          0x00012aec        0x0 /home/jay/work/sources/jayos/bsp/bootstrap.o
+ .data          0x00012aec        0x0 /home/jay/work/sources/jayos/bsp/exception_handlers.o
+ .data          0x00012aec        0x0 /home/jay/work/sources/jayos/bsp/aeabi.o
+ .data          0x00012aec        0x0 /home/jay/work/sources/jayos/bsp/gic.o
+ .data          0x00012aec        0x0 /home/jay/work/sources/jayos/bsp/uart.o
+ .data          0x00012aec        0x0 /home/jay/work/sources/jayos/bsp/vsprintf.o
+ .data          0x00012aec        0x0 /home/jay/work/sources/jayos/bsp/debug.o
+ .data          0x00012aec        0x0 /home/jay/work/sources/jayos/usr/main.o
+ .data          0x00012aec        0x0 /home/jay/work/sources/jayos/usr/task2.o
+ .data          0x00012aec        0xc /home/jay/work/sources/jayos/os/fos.o
+                0x00012aec                exp_stack_top
+                0x00012af0                irq_stack_top
+                0x00012af4                svc_stack_top
+ .data          0x00012af8        0x0 /home/jay/work/sources/jayos/os/fosarm.o
+ .data          0x00012af8        0x0 /home/jay/work/sources/jayos/os/fos_timer.o
+ .data          0x00012af8        0x0 /home/jay/work/sources/jayos/os/os_sem.o
+ .data          0x00012af8        0x0 /home/jay/work/sources/jayos/os/os_mutex.o
+                0x00012af8                __data_end = .
+
+.igot.plt       0x00012af8        0x0
+ .igot.plt      0x00012af8        0x0 /home/jay/work/sources/jayos/bsp/bootstrap.o
+                0x00012af8                . = ALIGN (0x4)
+                0x00012af8                __bss_start = .
+
+.bss            0x00012af8     0x8821
+ *(.bss)
+ .bss           0x00012af8        0x0 /home/jay/work/sources/jayos/bsp/bootstrap.o
+ .bss           0x00012af8        0x0 /home/jay/work/sources/jayos/bsp/exception_handlers.o
+ .bss           0x00012af8        0x0 /home/jay/work/sources/jayos/bsp/aeabi.o
+ .bss           0x00012af8        0x0 /home/jay/work/sources/jayos/bsp/gic.o
+ .bss           0x00012af8        0x0 /home/jay/work/sources/jayos/bsp/uart.o
+ .bss           0x00012af8        0x0 /home/jay/work/sources/jayos/bsp/vsprintf.o
+ .bss           0x00012af8        0x0 /home/jay/work/sources/jayos/bsp/debug.o
+ .bss           0x00012af8     0x1058 /home/jay/work/sources/jayos/usr/main.o
+ .bss           0x00013b50     0x6210 /home/jay/work/sources/jayos/usr/task2.o
+ .bss           0x00019d60        0x0 /home/jay/work/sources/jayos/os/fos.o
+ .bss           0x00019d60        0x0 /home/jay/work/sources/jayos/os/fosarm.o
+ .bss           0x00019d60        0x0 /home/jay/work/sources/jayos/os/fos_timer.o
+ .bss           0x00019d60        0x0 /home/jay/work/sources/jayos/os/os_sem.o
+ .bss           0x00019d60        0x4 /home/jay/work/sources/jayos/os/os_mutex.o
+ COMMON         0x00019d64        0x8 /home/jay/work/sources/jayos/bsp/gic.o
+                0x00019d64                os_timer_cb
+ COMMON         0x00019d6c       0x38 /home/jay/work/sources/jayos/usr/task2.o
+                0x00019d6c                thread_3_counter
+                0x00019d70                thread_5_counter
+                0x00019d74                semaphore_0
+                0x00019d7c                thread_7_counter
+                0x00019d80                thread_0_counter
+                0x00019d84                thread_2_counter
+                0x00019d88                thread_4_counter
+                0x00019d8c                thread_1_counter
+                0x00019d90                mutex_0
+                0x00019d98                thread_1_messages_sent
+                0x00019d9c                thread_2_messages_received
+                0x00019da0                thread_6_counter
+ COMMON         0x00019da4     0x1575 /home/jay/work/sources/jayos/os/fos.o
+                0x00019da4                os_err_count
+                0x00019da8                os_task_ready_list
+                0x00019dac                os_timer
+                0x00019e74                svc_stack
+                0x0001a274                irq_stack
+                0x0001b274                os_status
+                0x0001b278                os_timer_count
+                0x0001b27c                os_active_timer_count
+                0x0001b280                os_active_timer_list
+                0x0001b284                os_idle_timer_list
+                0x0001b288                os_cur_task
+                0x0001b28c                exp_stack
+                0x0001b30c                os_best_task
+                0x0001b310                os_task_num
+                0x0001b314                os_schedule_lock
+                0x0001b318                os_enable_rr
+                0x0001b319                __bss_end = .
+
+/DISCARD/
+ *(.dynstr*)
+ *(.dynamic*)
+ *(.plt*)
+ *(.interp*)
+ *(.gnu*)
+OUTPUT(/home/jay/work/sources/jayos/fos.elf elf32-littlearm)
+
+.ARM.attributes
+                0x00000000       0x25
+ .ARM.attributes
+                0x00000000       0x19 /home/jay/work/sources/jayos/bsp/bootstrap.o
+ .ARM.attributes
+                0x00000019       0x19 /home/jay/work/sources/jayos/bsp/exception_handlers.o
+ .ARM.attributes
+                0x00000032       0x19 /home/jay/work/sources/jayos/bsp/aeabi.o
+ .ARM.attributes
+                0x0000004b       0x32 /home/jay/work/sources/jayos/bsp/gic.o
+ .ARM.attributes
+                0x0000007d       0x32 /home/jay/work/sources/jayos/bsp/uart.o
+ .ARM.attributes
+                0x000000af       0x32 /home/jay/work/sources/jayos/bsp/vsprintf.o
+ .ARM.attributes
+                0x000000e1       0x32 /home/jay/work/sources/jayos/bsp/debug.o
+ .ARM.attributes
+                0x00000113       0x32 /home/jay/work/sources/jayos/usr/main.o
+ .ARM.attributes
+                0x00000145       0x32 /home/jay/work/sources/jayos/usr/task2.o
+ .ARM.attributes
+                0x00000177       0x32 /home/jay/work/sources/jayos/os/fos.o
+ .ARM.attributes
+                0x000001a9       0x19 /home/jay/work/sources/jayos/os/fosarm.o
+ .ARM.attributes
+                0x000001c2       0x32 /home/jay/work/sources/jayos/os/fos_timer.o
+ .ARM.attributes
+                0x000001f4       0x32 /home/jay/work/sources/jayos/os/os_sem.o
+ .ARM.attributes
+                0x00000226       0x32 /home/jay/work/sources/jayos/os/os_mutex.o
+
+.comment        0x00000000       0x6e
+ .comment       0x00000000       0x6e /home/jay/work/sources/jayos/bsp/gic.o
+                                 0x6f (size before relaxing)
+ .comment       0x0000006e       0x6f /home/jay/work/sources/jayos/bsp/uart.o
+ .comment       0x0000006e       0x6f /home/jay/work/sources/jayos/bsp/vsprintf.o
+ .comment       0x0000006e       0x6f /home/jay/work/sources/jayos/bsp/debug.o
+ .comment       0x0000006e       0x6f /home/jay/work/sources/jayos/usr/main.o
+ .comment       0x0000006e       0x6f /home/jay/work/sources/jayos/usr/task2.o
+ .comment       0x0000006e       0x6f /home/jay/work/sources/jayos/os/fos.o
+ .comment       0x0000006e       0x6f /home/jay/work/sources/jayos/os/fos_timer.o
+ .comment       0x0000006e       0x6f /home/jay/work/sources/jayos/os/os_sem.o
+ .comment       0x0000006e       0x6f /home/jay/work/sources/jayos/os/os_mutex.o
+
+.debug_line     0x00000000     0x1133
+ .debug_line    0x00000000       0x70 /home/jay/work/sources/jayos/bsp/bootstrap.o
+ .debug_line    0x00000070       0xd7 /home/jay/work/sources/jayos/bsp/exception_handlers.o
+ .debug_line    0x00000147       0xb7 /home/jay/work/sources/jayos/bsp/aeabi.o
+ .debug_line    0x000001fe      0x190 /home/jay/work/sources/jayos/bsp/gic.o
+ .debug_line    0x0000038e       0x71 /home/jay/work/sources/jayos/bsp/uart.o
+ .debug_line    0x000003ff      0x1f6 /home/jay/work/sources/jayos/bsp/vsprintf.o
+ .debug_line    0x000005f5       0xd2 /home/jay/work/sources/jayos/bsp/debug.o
+ .debug_line    0x000006c7       0xfa /home/jay/work/sources/jayos/usr/main.o
+ .debug_line    0x000007c1      0x1de /home/jay/work/sources/jayos/usr/task2.o
+ .debug_line    0x0000099f      0x34a /home/jay/work/sources/jayos/os/fos.o
+ .debug_line    0x00000ce9       0x88 /home/jay/work/sources/jayos/os/fosarm.o
+ .debug_line    0x00000d71       0xac /home/jay/work/sources/jayos/os/fos_timer.o
+ .debug_line    0x00000e1d      0x17f /home/jay/work/sources/jayos/os/os_sem.o
+ .debug_line    0x00000f9c      0x197 /home/jay/work/sources/jayos/os/os_mutex.o
+
+.debug_info     0x00000000     0x3a5c
+ .debug_info    0x00000000       0x72 /home/jay/work/sources/jayos/bsp/bootstrap.o
+ .debug_info    0x00000072       0x7b /home/jay/work/sources/jayos/bsp/exception_handlers.o
+ .debug_info    0x000000ed       0x6e /home/jay/work/sources/jayos/bsp/aeabi.o
+ .debug_info    0x0000015b      0x65a /home/jay/work/sources/jayos/bsp/gic.o
+ .debug_info    0x000007b5       0xd4 /home/jay/work/sources/jayos/bsp/uart.o
+ .debug_info    0x00000889      0x60c /home/jay/work/sources/jayos/bsp/vsprintf.o
+ .debug_info    0x00000e95      0x179 /home/jay/work/sources/jayos/bsp/debug.o
+ .debug_info    0x0000100e      0x398 /home/jay/work/sources/jayos/usr/main.o
+ .debug_info    0x000013a6      0x9cc /home/jay/work/sources/jayos/usr/task2.o
+ .debug_info    0x00001d72      0xe03 /home/jay/work/sources/jayos/os/fos.o
+ .debug_info    0x00002b75       0x6e /home/jay/work/sources/jayos/os/fosarm.o
+ .debug_info    0x00002be3      0x18e /home/jay/work/sources/jayos/os/fos_timer.o
+ .debug_info    0x00002d71      0x61a /home/jay/work/sources/jayos/os/os_sem.o
+ .debug_info    0x0000338b      0x6d1 /home/jay/work/sources/jayos/os/os_mutex.o
+
+.debug_abbrev   0x00000000     0x1106
+ .debug_abbrev  0x00000000       0x14 /home/jay/work/sources/jayos/bsp/bootstrap.o
+ .debug_abbrev  0x00000014       0x14 /home/jay/work/sources/jayos/bsp/exception_handlers.o
+ .debug_abbrev  0x00000028       0x14 /home/jay/work/sources/jayos/bsp/aeabi.o
+ .debug_abbrev  0x0000003c      0x269 /home/jay/work/sources/jayos/bsp/gic.o
+ .debug_abbrev  0x000002a5       0x92 /home/jay/work/sources/jayos/bsp/uart.o
+ .debug_abbrev  0x00000337      0x262 /home/jay/work/sources/jayos/bsp/vsprintf.o
+ .debug_abbrev  0x00000599      0x150 /home/jay/work/sources/jayos/bsp/debug.o
+ .debug_abbrev  0x000006e9      0x12f /home/jay/work/sources/jayos/usr/main.o
+ .debug_abbrev  0x00000818      0x190 /home/jay/work/sources/jayos/usr/task2.o
+ .debug_abbrev  0x000009a8      0x33e /home/jay/work/sources/jayos/os/fos.o
+ .debug_abbrev  0x00000ce6       0x14 /home/jay/work/sources/jayos/os/fosarm.o
+ .debug_abbrev  0x00000cfa      0x11e /home/jay/work/sources/jayos/os/fos_timer.o
+ .debug_abbrev  0x00000e18      0x183 /home/jay/work/sources/jayos/os/os_sem.o
+ .debug_abbrev  0x00000f9b      0x16b /home/jay/work/sources/jayos/os/os_mutex.o
+
+.debug_aranges  0x00000000      0x1c0
+ .debug_aranges
+                0x00000000       0x20 /home/jay/work/sources/jayos/bsp/bootstrap.o
+ .debug_aranges
+                0x00000020       0x20 /home/jay/work/sources/jayos/bsp/exception_handlers.o
+ .debug_aranges
+                0x00000040       0x20 /home/jay/work/sources/jayos/bsp/aeabi.o
+ .debug_aranges
+                0x00000060       0x20 /home/jay/work/sources/jayos/bsp/gic.o
+ .debug_aranges
+                0x00000080       0x20 /home/jay/work/sources/jayos/bsp/uart.o
+ .debug_aranges
+                0x000000a0       0x20 /home/jay/work/sources/jayos/bsp/vsprintf.o
+ .debug_aranges
+                0x000000c0       0x20 /home/jay/work/sources/jayos/bsp/debug.o
+ .debug_aranges
+                0x000000e0       0x20 /home/jay/work/sources/jayos/usr/main.o
+ .debug_aranges
+                0x00000100       0x20 /home/jay/work/sources/jayos/usr/task2.o
+ .debug_aranges
+                0x00000120       0x20 /home/jay/work/sources/jayos/os/fos.o
+ .debug_aranges
+                0x00000140       0x20 /home/jay/work/sources/jayos/os/fosarm.o
+ .debug_aranges
+                0x00000160       0x20 /home/jay/work/sources/jayos/os/fos_timer.o
+ .debug_aranges
+                0x00000180       0x20 /home/jay/work/sources/jayos/os/os_sem.o
+ .debug_aranges
+                0x000001a0       0x20 /home/jay/work/sources/jayos/os/os_mutex.o
+
+.debug_loc      0x00000000     0x19f6
+ .debug_loc     0x00000000      0x3db /home/jay/work/sources/jayos/bsp/gic.o
+ .debug_loc     0x000003db       0x1f /home/jay/work/sources/jayos/bsp/uart.o
+ .debug_loc     0x000003fa      0x8f4 /home/jay/work/sources/jayos/bsp/vsprintf.o
+ .debug_loc     0x00000cee       0x72 /home/jay/work/sources/jayos/bsp/debug.o
+ .debug_loc     0x00000d60       0x7e /home/jay/work/sources/jayos/usr/task2.o
+ .debug_loc     0x00000dde      0x681 /home/jay/work/sources/jayos/os/fos.o
+ .debug_loc     0x0000145f       0x90 /home/jay/work/sources/jayos/os/fos_timer.o
+ .debug_loc     0x000014ef      0x252 /home/jay/work/sources/jayos/os/os_sem.o
+ .debug_loc     0x00001741      0x2b5 /home/jay/work/sources/jayos/os/os_mutex.o
+
+.debug_ranges   0x00000000      0x160
+ .debug_ranges  0x00000000       0x18 /home/jay/work/sources/jayos/bsp/gic.o
+ .debug_ranges  0x00000018       0x28 /home/jay/work/sources/jayos/bsp/vsprintf.o
+ .debug_ranges  0x00000040       0x18 /home/jay/work/sources/jayos/bsp/debug.o
+ .debug_ranges  0x00000058       0x78 /home/jay/work/sources/jayos/os/fos.o
+ .debug_ranges  0x000000d0       0x48 /home/jay/work/sources/jayos/os/os_sem.o
+ .debug_ranges  0x00000118       0x48 /home/jay/work/sources/jayos/os/os_mutex.o
+
+.debug_str      0x00000000      0xda1
+ .debug_str     0x00000000      0x352 /home/jay/work/sources/jayos/bsp/gic.o
+                                0x3ad (size before relaxing)
+ .debug_str     0x00000352       0x50 /home/jay/work/sources/jayos/bsp/uart.o
+                                0x119 (size before relaxing)
+ .debug_str     0x000003a2       0xfa /home/jay/work/sources/jayos/bsp/vsprintf.o
+                                0x1dc (size before relaxing)
+ .debug_str     0x0000049c       0x38 /home/jay/work/sources/jayos/bsp/debug.o
+                                0x141 (size before relaxing)
+ .debug_str     0x000004d4      0x157 /home/jay/work/sources/jayos/usr/main.o
+                                0x2cb (size before relaxing)
+ .debug_str     0x0000062b      0x2be /home/jay/work/sources/jayos/usr/task2.o
+                                0x52c (size before relaxing)
+ .debug_str     0x000008e9      0x3a9 /home/jay/work/sources/jayos/os/fos.o
+                                0x66c (size before relaxing)
+ .debug_str     0x00000c92       0x73 /home/jay/work/sources/jayos/os/fos_timer.o
+                                0x1e7 (size before relaxing)
+ .debug_str     0x00000d05       0x62 /home/jay/work/sources/jayos/os/os_sem.o
+                                0x31b (size before relaxing)
+ .debug_str     0x00000d67       0x3a /home/jay/work/sources/jayos/os/os_mutex.o
+                                0x345 (size before relaxing)
+
+.debug_frame    0x00000000      0x6cc
+ .debug_frame   0x00000000       0xec /home/jay/work/sources/jayos/bsp/gic.o
+ .debug_frame   0x000000ec       0x40 /home/jay/work/sources/jayos/bsp/uart.o
+ .debug_frame   0x0000012c       0xbc /home/jay/work/sources/jayos/bsp/vsprintf.o
+ .debug_frame   0x000001e8       0x4c /home/jay/work/sources/jayos/bsp/debug.o
+ .debug_frame   0x00000234       0x38 /home/jay/work/sources/jayos/usr/main.o
+ .debug_frame   0x0000026c       0xa0 /home/jay/work/sources/jayos/usr/task2.o
+ .debug_frame   0x0000030c      0x22c /home/jay/work/sources/jayos/os/fos.o
+ .debug_frame   0x00000538       0x80 /home/jay/work/sources/jayos/os/fos_timer.o
+ .debug_frame   0x000005b8       0x9c /home/jay/work/sources/jayos/os/os_sem.o
+ .debug_frame   0x00000654       0x78 /home/jay/work/sources/jayos/os/os_mutex.o

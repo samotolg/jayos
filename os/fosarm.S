@@ -1,11 +1,16 @@
 .global	os_schedule	
+.global	os_int_lock
+.global os_int_free
+
 .extern	os_best_task
 .extern	os_cur_task
+.extern os_schedule_lock
 
 .equ	PSR_MODE_MASK,			0x1F
 .equ	PSR_MODE_SVC,			0x13
-;.equ	PSR_IRQ_MASK,			0x80
-;.equ	PSR_FIQ_MASK,			0x40
+.equ	PSR_MODE_IRQ,			0x12
+.equ	PSR_IRQ_MASK,			0x80
+.equ	PSR_FIQ_MASK,			0x40
 .equ	CONTEXT_FRAME_SIZE,		0x40
 .equ	PSR_IF_BIT_MASK,		0xC0
 
@@ -28,6 +33,14 @@ os_schedule:
 ;------------------------------------------------------------------*/
 	and 	a1, a3, #PSR_MODE_MASK
 	cmp		a1, #PSR_MODE_SVC
+	bne		os_schedule_exit
+
+/*------------------------------------------------------------------
+; If schedule is locked, just return
+;------------------------------------------------------------------*/
+	ldr		a2, =os_schedule_lock
+	ldr		a2, [a2]
+	cmp		a2, #0
 	bne		os_schedule_exit
 
 /*------------------------------------------------------------------
@@ -74,5 +87,20 @@ os_schedule:
 os_schedule_exit:
 	msr		CPSR_f, a3
 	msr		CPSR_c, a3
+	bx		lr
 
+os_int_lock:
+	mrs		a1, cpsr
+	orr		a2, a1, #PSR_IRQ_MASK
+	msr		cpsr_c, a2
+	and		a1, a1, #PSR_IRQ_MASK	/* if irq or fiq is locked, return none zero value */
+	bx		lr
+
+os_int_free:
+	mrs		a1, cpsr
+	bic		a2, a1, #PSR_IRQ_MASK
+	msr		cpsr_c, a2
+	and		a1, a1, #PSR_IRQ_MASK
+	bx		lr
+	
 .end	

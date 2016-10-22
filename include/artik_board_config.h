@@ -1,0 +1,14 @@
+#ifndef __ARTIK_BOARD_CONFIG_H__
+#define __ARTIK_BOARD_CONFIG_H__
+
+#define GICD_BASE		0x80401000
+#define GICC_BASE		0x80402000
+
+#define MCT_BASE		0x80010000
+#define MCT_G_BASE		0x80010100
+#define MCT_L_BASE		0x80010300
+
+#define GPP0_CON		0x80040000
+#define UART_BASE		0x80200000
+
+#endif /* __ARTIK_BOARD_CONFIG_H__ */

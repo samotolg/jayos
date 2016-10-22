@@ -1,25 +1,66 @@
-CC = /usr/local/gcc-arm-none-eabi-5_4-2016q2/bin/arm-none-eabi-gcc
-LD = /usr/local/gcc-arm-none-eabi-5_4-2016q2/bin/arm-none-eabi-ld
+SOURCE_TOP := $(shell pwd)
+include $(SOURCE_TOP)/Makefile.config
 
-CFLAGS = -Wall -Wextra -march=armv6 -fPIC -marm
-LFLAGS = -N -Ttext=0x10000
+TARGET_NAME := fos
+TARGET	:= $(SOURCE_TOP)/$(TARGET_NAME).bin
+ELFS	:= $(SOURCE_TOP)/$(TARGET_NAME).elf
+LINKER	:= $(SOURCE_TOP)/$(TARGET_NAME).ld
+MAP	:= $(SOURCE_TOP)/$(TARGET_NAME).map
 
-all:main.elf
+#ASFLAGS := -g -mthumb-interwork -mcpu=cortex-r4 
+ASFLAGS := -g -mthumb-interwork -march=armv6 -marm
+ASFLAGS += -I$(SOURCE_TOP) -I$(SOURCE_TOP)/include -I$(SOURCE_TOP)/os -I$(SOURCE_TOP)/usr -I$(SOURCE_TOP)/bsp
+#CCFLAGS := -Os -g -mno-thumb-interwork -mcpu=cortex-r4 -Wall -Werror
+CCFLAGS := -Os -g -mno-thumb-interwork -mcpu=ARM926EJ-S -Wall
+CCFLAGS += -ffreestanding -nostdlib -fno-builtin -static
+CCFLAGS += -I$(SOURCE_TOP) -I$(SOURCE_TOP)/include -I$(SOURCE_TOP)/os -I$(SOURCE_TOP)/usr -I$(SOURCE_TOP)/bsp
 
-main.elf:bootstrap.o exception_handlers.o main.o utils.o fos.o fosarm.o
+#CXFLAGS	:= -O0 -g -mno-thumb-interwork -march=armv6 -marm -Wall -Werror
+CXFLAGS	:= -O0 -g -mno-thumb-interwork -mcpu=cortex-r4 -Wall -Werror
+CXFLAGS += -ffreestanding -nostdlib -fno-builtin -static
 
-.SUFFIXES: .c .o
-.c.o:
-	$(CC) -c $(CFLAGS) -o $@ $^
+LDFLAGS := -static -nostdlib -Map=$(MAP) -N -T $(LINKER)
 
-.SUFFIXES: .o .elf
-.o.elf:
-	$(LD) $(LFLAGS)	-o $@ $^
-	
-.SUFFIXES: .s .o
-.s.o:
-	$(CC) -c $(CFLAGS) -o $@ $^	
-	
+OBJCOPYFLAGS := -x -S --output-target binary 
+
+INCS	:= -I$(SOURCE_TOP)/include \
+	-I$(SOURCE_TOP)/bsp
+
+OBJS	:= bsp/bootstrap.o	\
+	bsp/exception_handlers.o \
+	bsp/aeabi.o				\
+	bsp/gic.o				\
+	bsp/uart.o				\
+	bsp/vsprintf.o			\
+	bsp/debug.o				\
+	usr/main.o				\
+	usr/task2.o				\
+	os/fos.o				\
+	os/fosarm.o 			\
+	os/fos_timer.o			\
+	os/os_sem.o				\
+	os/os_mutex.o
+
+OBJS := $(patsubst %.o, $(SOURCE_TOP)/%.o, $(OBJS))
+
+.PHONY: all clean rebuild
+
+all: $(TARGET)
+
+rebuild: clean all
+
 clean:
-	rm *.o
-	rm main.elf	
+	@rm -f $(OBJS) $(OBJS_LIB) $(TARGET) $(ELFS) $(MAP)
+
+$(TARGET): $(ELFS)
+	$(OCP_BIN)
+
+$(ELFS): $(OBJS) $(OBJS_LIB)
+	$(LD_ELF)
+
+$(SOURCE_TOP)/%.o: $(SOURCE_TOP)/%.c
+	$(GCC_OBJ)
+	
+$(SOURCE_TOP)/%.o: $(SOURCE_TOP)/%.S
+	$(ASM_OBJ)
+	
