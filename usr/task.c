@@ -19,9 +19,13 @@ static os_mutex_type							g_mutex;
 
 //------------------------------------------
 
+#ifdef OS_SCHEDULE_ROUND_ROBIN
 #define OS_TASK_PRIO_DUMMY					5
 #define OS_TASK_PRIO_DUMMY2					5
-
+#else
+#define OS_TASK_PRIO_DUMMY					5
+#define OS_TASK_PRIO_DUMMY2					6
+#endif
 //------------------------------------------
 
 #define DUMMY_STACK_SIZE					2048

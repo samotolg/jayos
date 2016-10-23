@@ -7,7 +7,6 @@
                       Function Prototype Declaration
 ******************************************************************************/
 extern os_tcb_type* 	os_get_cur_task();
-extern void 			os_set_best_task();
 
 /******************************************************************************
  Function : os_sem_init

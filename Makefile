@@ -26,22 +26,23 @@ OBJCOPYFLAGS := -x -S --output-target binary
 INCS	:= -I$(SOURCE_TOP)/include \
 	-I$(SOURCE_TOP)/bsp
 
-OBJS	:= bsp/bootstrap.o	\
-	bsp/exception_handlers.o \
-	util/aeabi.o				\
-	bsp/gic.o				\
-	bsp/uart.o				\
-	util/vsprintf.o			\
-	util/debug.o				\
-	usr/main.o				\
-	usr/task.o				\
-	os/fos.o				\
-	os/fosarm.o 			\
-	os/fos_timer.o			\
-	os/os_sem.o				\
-	os/os_mutex.o			\
-	bsp/hw.o				\
-	bsp/hw_timer.o			
+OBJS	:= 							\
+	bsp/bootstrap.o					\
+	bsp/exception_handlers.o 		\
+	bsp/gic.o						\
+	bsp/uart.o						\
+	bsp/hw.o						\
+	bsp/hw_timer.o					\
+	usr/main.o						\
+	usr/task2.o						\
+	os/os_mutex.o					\
+	os/fos.o						\
+	os/fosarm.o 					\
+	os/fos_timer.o					\
+	os/os_sem.o						\
+	util/aeabi.o					\
+	util/vsprintf.o					\
+	util/debug.o					\
 
 OBJS := $(patsubst %.o, $(SOURCE_TOP)/%.o, $(OBJS))
 

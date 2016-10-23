@@ -8,7 +8,6 @@ static u32 os_mutex_count;
                       Function Prototype Declaration
 ******************************************************************************/
 extern os_tcb_type* 	os_get_cur_task();
-extern void 			os_set_best_task();
 extern void 			os_insert_to_ready_list(os_tcb_type *new_tcb);
 extern void 			os_remove_from_ready_list(os_tcb_type *p_tcb);
 

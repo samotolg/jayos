@@ -15,26 +15,27 @@
 ******************************************************************************/
 os_tcb_type									*os_best_task;
 os_tcb_type									*os_cur_task;
-os_tcb_type									*os_task_ready_list;
 os_status_type								os_status;
-u8											os_task_num;
-os_timer_type								*os_active_timer_list;
-u8											os_active_timer_count;
-os_timer_type								*os_idle_timer_list;
-os_timer_type								os_timer[OS_TIMER_MAX];
-u32											os_timer_count;
 u32											os_schedule_lock;
+
+static os_tcb_type							*os_task_ready_list;
+static u8									os_task_num;
+static os_timer_type						*os_active_timer_list;
+static u8									os_active_timer_count;
+static os_timer_type						*os_idle_timer_list;
+static os_timer_type						os_timer[OS_TIMER_MAX];
+static u32									os_timer_count;
 #ifdef OS_SCHEDULE_ROUND_ROBIN
-bool										os_enable_rr;
+static bool									os_enable_rr;
 #endif
-u32											os_err_count;
+static u32									os_err_count;
 
 /******************************************************************************
                       Function Prototype Declaration
 ******************************************************************************/
-void 			os_timer_expired(int param);
-void 			os_switching_rr(int param);
-void 			os_set_best_task();
+static void 			os_timer_expired(int param);
+static void 			os_switching_rr(int param);
+static void 			os_set_best_task();
 
 
 /******************************************************************************
@@ -123,7 +124,7 @@ void os_start()
  	This function will start each task.
  
 ******************************************************************************/
-void os_task_start(void (*func)(u32 param), u32 param)
+static void os_task_start(void (*func)(u32 param), u32 param)
 {
 	func(param);
 
@@ -144,10 +145,12 @@ void os_task_start(void (*func)(u32 param), u32 param)
 ******************************************************************************/
 void os_insert_to_ready_list(os_tcb_type *new_tcb)
 {
-	os_tcb_type			*task_ptr = os_task_ready_list;
+	os_tcb_type			*task_ptr;
 
 	OS_INTLOCK();
-//	printf("INSERT TO READY LIST : %s\n", new_tcb->name);
+	
+	task_ptr = os_task_ready_list;
+
 	if (task_ptr == NULL) {
 		/* XXX: Since there is always an idle task in the main list, 
 		   control should not come here except inserting idle_task   */
@@ -232,7 +235,6 @@ void os_remove_from_ready_list(os_tcb_type *p_tcb)
 #endif
 
 	OS_INTLOCK();
-//	printf("REMOVE FROM READY LIST : %s\n", p_tcb->name);
 
 #ifdef OS_SCHEDULE_ROUND_ROBIN
 	if (p_tcb->link.next == NULL) {  
@@ -456,7 +458,7 @@ void os_create_task(
  	priority will be set to the os_best_task variable.
  	 
 ******************************************************************************/
-void os_set_best_task()
+static void os_set_best_task()
 {
 	os_tcb_type		*p_task = os_task_ready_list;
 
@@ -540,7 +542,6 @@ os_sig_type	os_set_sigs(os_tcb_type *p_tcb, os_sig_type sigs)
 	printf("\n[SIG] [%s] received [%p] sigs.\n", p_tcb->name, p_tcb->sigs);
 #endif
 
-	p_tcb->wait = 0;  /* clear wait signal */
 	os_set_status(p_tcb);
 	
 	if (p_tcb->suspend == FALSE) 
@@ -594,7 +595,7 @@ os_tcb_type* os_get_cur_task()
  	to set the timer hardware specific timer.
  	 
 ******************************************************************************/
-void os_enable_timer(u32 timer)
+static void os_enable_timer(u32 timer)
 {
 #ifdef	OS_DEBUG_TIMER
 	printf("[TIM] OS Timer enabled!\n");
@@ -610,7 +611,7 @@ void os_enable_timer(u32 timer)
  	the hardware counter.
  	 
 ******************************************************************************/
-void os_disable_timer()
+static void os_disable_timer()
 {
 	os_hw_timer_disable(OS_TIMER_CHANNEL);
 #ifdef	OS_DEBUG_TIMER
@@ -628,7 +629,7 @@ void os_disable_timer()
  	round robin list.
  	 
 ******************************************************************************/
-void os_switching_rr(int param)
+static void os_switching_rr(int param)
 {
 	if (!os_schedule_lock) {
 		if (os_best_task->rr_link.next) {
@@ -663,7 +664,7 @@ void os_switching_rr(int param)
  	the timer. Finally it will set the signals to the designated task.
  	 
 ******************************************************************************/
-void os_timer_expired(int param)
+static void os_timer_expired(int param)
 {
 	os_timer_type	*p_timer, expired_timer;
 
@@ -685,6 +686,7 @@ void os_timer_expired(int param)
 	printf("[TIM] TIMER [%s(wait(%p):sigs(%p))] REMOVED!\n", expired_timer.p_tcb->name, expired_timer.p_tcb->wait, expired_timer.p_tcb->sigs);
 #endif	
 	os_set_sigs(expired_timer.p_tcb, expired_timer.sigs);
+	expired_timer.p_tcb->wait &= ~(expired_timer.sigs);
 
 	if (os_active_timer_list) {
 		os_active_timer_list->prev = NULL;
@@ -714,7 +716,7 @@ void os_timer_expired(int param)
  	 
 ******************************************************************************/
 
-void os_insert_timer_to_active_list(os_timer_type *new_timer)
+static void os_insert_timer_to_active_list(os_timer_type *new_timer)
 {
 	os_timer_type			*p_timer;
 	u32						time_diff;
@@ -882,7 +884,7 @@ void os_delay(u32 timer)
 
 	p_timer = os_idle_timer_list;
 	if (p_timer == NULL)
-		return;		/* no more timer available now */
+		goto delay_exit;		/* no more timer available now */
 
 	os_idle_timer_list = p_timer->next;
 	if (os_idle_timer_list) os_idle_timer_list->prev = NULL;
@@ -909,6 +911,7 @@ void os_delay(u32 timer)
 	printf("[SIG] [%s] got [%p] sigs {in os_delay}\n", os_cur_task->name, os_cur_task->sigs);
 #endif
 
+delay_exit:
 	OS_INTFREE();
 	
 	return;

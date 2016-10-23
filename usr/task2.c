@@ -7,7 +7,7 @@
 #include	"os_mutex.h"
 #include 	"fos_timer.h"
 
-#define     DEMO_STACK_SIZE         2048
+#define     DEMO_STACK_SIZE         512
 #define     DEMO_BYTE_POOL_SIZE     9120
 #define     DEMO_BLOCK_POOL_SIZE     100
 #define     DEMO_QUEUE_SIZE          100
@@ -15,8 +15,8 @@
 
 /* Define the ThreadX object control blocks...  */
 static os_tcb_type 							thread_0;
-static os_tcb_type 							thread_1;
-static os_tcb_type 							thread_2;
+//static os_tcb_type 							thread_1;
+//static os_tcb_type 							thread_2;
 static os_tcb_type 							thread_3;
 static os_tcb_type 							thread_4;
 static os_tcb_type 							thread_5;
@@ -26,8 +26,8 @@ os_sem_type									semaphore_0;
 os_mutex_type								mutex_0;
 
 static u32									thread_0_stack[DEMO_STACK_SIZE];
-static u32									thread_1_stack[DEMO_STACK_SIZE];
-static u32									thread_2_stack[DEMO_STACK_SIZE];
+//static u32									thread_1_stack[DEMO_STACK_SIZE];
+//static u32									thread_2_stack[DEMO_STACK_SIZE];
 static u32									thread_3_stack[DEMO_STACK_SIZE];
 static u32									thread_4_stack[DEMO_STACK_SIZE];
 static u32									thread_5_stack[DEMO_STACK_SIZE];
@@ -41,23 +41,23 @@ static u32									thread_7_stack[DEMO_STACK_SIZE];
 
 /* Define the counters used in the demo application...  */
 
-ULONG           thread_0_counter;
-ULONG           thread_1_counter;
-ULONG           thread_1_messages_sent;
-ULONG           thread_2_counter;
-ULONG           thread_2_messages_received;
-ULONG           thread_3_counter;
-ULONG           thread_4_counter;
-ULONG           thread_5_counter;
-ULONG           thread_6_counter;
-ULONG           thread_7_counter;
+static ULONG           thread_0_counter;
+static ULONG           thread_1_counter;
+//static ULONG           thread_1_messages_sent;
+static ULONG           thread_2_counter;
+//static ULONG           thread_2_messages_received;
+static ULONG           thread_3_counter;
+static ULONG           thread_4_counter;
+static ULONG           thread_5_counter;
+static ULONG           thread_6_counter;
+static ULONG           thread_7_counter;
 
 
 /* Define thread prototypes.  */
 
 void    thread_0_entry(ULONG thread_input);
-void    thread_1_entry(ULONG thread_input);
-void    thread_2_entry(ULONG thread_input);
+//void    thread_1_entry(ULONG thread_input);
+//void    thread_2_entry(ULONG thread_input);
 void    thread_3_and_4_entry(ULONG thread_input);
 void    thread_5_entry(ULONG thread_input);
 void    thread_6_and_7_entry(ULONG thread_input);
@@ -131,9 +131,8 @@ void    thread_0_entry(ULONG thread_input)
         printf("           thread 5 events received:      %lu\n", thread_5_counter);
         printf("           thread 6 mutex obtained:       %lu\n", thread_6_counter);
         printf("           thread 7 mutex obtained:       %lu\n\n", thread_7_counter);
-
         /* Sleep for 10 ticks.  */
-		os_delay(10000);
+		os_delay(100000);
 
         /* Set event flag 0 to wakeup thread 5.  */
 		os_set_sigs(&thread_5, EVENT_SIG);
@@ -214,25 +213,22 @@ UINT    status;
         /* Get the semaphore with suspension.  */
 //        status =  tx_semaphore_get(&semaphore_0, TX_WAIT_FOREVER);
 		status = os_sem_wait(&semaphore_0);
+		if (status >=0) {
 
-        /* Sleep for 2 ticks to hold the semaphore.  */
-//        tx_thread_sleep(2);
-		os_delay(2000);
+	        /* Sleep for 2 ticks to hold the semaphore.  */
+//  	      tx_thread_sleep(2);
+			os_delay(2000);
 
-        /* Release the semaphore.  */
-//        status =  tx_semaphore_put(&semaphore_0);
-		status = os_sem_post(&semaphore_0);
+        	/* Release the semaphore.  */
+//        	status =  tx_semaphore_put(&semaphore_0);
+			os_sem_post(&semaphore_0);
+		}
     }
 }
 
 
 void    thread_5_entry(ULONG thread_input)
 {
-
-UINT    status;
-ULONG   actual_flags;
-
-
     /* This thread simply waits for an event in a forever loop.  */
     while(1)
     {
@@ -249,10 +245,6 @@ ULONG   actual_flags;
 
 void    thread_6_and_7_entry(ULONG thread_input)
 {
-
-UINT    status;
-
-
     /* This function is executed from thread 6 and thread 7.  As the loop
        below shows, these function compete for ownership of mutex_0.  */
     while(1)

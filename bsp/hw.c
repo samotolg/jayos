@@ -4,9 +4,9 @@
 /******************************************************************************
                       Stack Address
 ******************************************************************************/
-#define SVC_STACK_SIZ				1024
-#define IRQ_STACK_SIZ				1024
-#define EXP_STACK_SIZ				1024
+#define SVC_STACK_SIZ				32
+#define IRQ_STACK_SIZ				512
+#define EXP_STACK_SIZ				32
 
 u32 svc_stack[SVC_STACK_SIZ];
 u32 irq_stack[IRQ_STACK_SIZ];
