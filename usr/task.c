@@ -13,7 +13,7 @@ extern u32 os_hw_timer_get_global_count();
 #ifdef OS_SEMAPHORE
 static os_sem_type							g_sem;
 #endif
-#ifdef OS_MUTEX	
+#ifdef OS_MUTEX
 static os_mutex_type							g_mutex;
 #endif
 
@@ -26,13 +26,13 @@ static os_mutex_type							g_mutex;
 //------------------------------------------
 
 #define DUMMY_STACK_SIZE					2048
-#define OS_TASK_SLICE_DUMMY					300
+#define OS_TASK_SLICE_DUMMY					30
 #define OS_SIGS_DUMMY_TIMER_WAIT			0x0001
 
 static os_tcb_type 							dummy_tcb;
 static u32									dummy_stack[DUMMY_STACK_SIZE];
 
-void dummy_task(u32 param) 
+void dummy_task(u32 param)
 {
 	while(1) {
 #ifdef OS_MUTEX
@@ -51,30 +51,30 @@ void dummy_task(u32 param)
 		os_set_timer(TIMER_1S*2, OS_SIGS_DUMMY_TIMER_WAIT);
 		os_wait_sigs(OS_SIGS_DUMMY_TIMER_WAIT);
 		os_clr_sigs(&dummy_tcb, OS_SIGS_DUMMY_TIMER_WAIT);
-#endif		
+#endif
 	};
 }
 
 //------------------------------------------
 
 #define DUMMY2_STACK_SIZE					1024
-#define OS_TASK_SLICE_DUMMY2				500
+#define OS_TASK_SLICE_DUMMY2				50
 #define OS_SIGS_DUMMY2_TIMER_WAIT			0x0040
 
 static os_tcb_type 							dummy2_tcb;
 static u32									dummy2_stack[DUMMY2_STACK_SIZE];
 
-void dummy2_task(u32 param) 
+void dummy2_task(u32 param)
 {
 	while(1) {
-#ifdef OS_SEMAPHORE		
+#ifdef OS_SEMAPHORE
 		os_sem_wait(&g_sem);
 #endif
 		for (int i=0;i<2000;i++) {
 			printf("|");
 			for (int j=0;j<500; j++);
 		}
-#ifdef OS_SEMAPHORE			
+#ifdef OS_SEMAPHORE
 		os_sem_post(&g_sem);
 #endif
 #ifdef OS_DELAY
@@ -83,7 +83,7 @@ void dummy2_task(u32 param)
 		os_set_timer(TIMER_1S*3, OS_SIGS_DUMMY2_TIMER_WAIT);
 		os_wait_sigs(OS_SIGS_DUMMY2_TIMER_WAIT);
 		os_clr_sigs(&dummy2_tcb, OS_SIGS_DUMMY2_TIMER_WAIT);
-#endif		
+#endif
 	};
 }
 
@@ -106,16 +106,16 @@ void dummy2_task(u32 param)
 //------------------------------------------
 
 #define MUMMY_STACK_SIZE					1024
-#define OS_TASK_SLICE_MUMMY					1000
+#define OS_TASK_SLICE_MUMMY					100
 #define OS_SIGS_MUMMY_TIMER_WAIT			0x0002
 
 static os_tcb_type 							mummy_tcb;
 static u32									mummy_stack[MUMMY_STACK_SIZE];
 
-void mummy_task(u32 param) 
+void mummy_task(u32 param)
 {
 	while(1) {
-#ifdef MUMMY_SLEEP		
+#ifdef MUMMY_SLEEP
 		u32 cnt = os_hw_timer_get_global_count();
 #ifdef OS_MUTEX
 		os_mutex_wait(&g_mutex);
@@ -140,10 +140,10 @@ void mummy_task(u32 param)
 #endif
 		for (int i=0;i<1000;i++)
 			printf("1");
-#ifdef OS_MUTEX		
+#ifdef OS_MUTEX
 		os_mutex_post(&g_mutex);
 #endif
-#endif		
+#endif
 	};
 
 }
@@ -151,17 +151,17 @@ void mummy_task(u32 param)
 //------------------------------------------
 
 #define MUMMY2_STACK_SIZE					1024
-#define OS_TASK_SLICE_MUMMY2				1500
+#define OS_TASK_SLICE_MUMMY2				150
 #define OS_SIGS_MUMMY2_TIMER_WAIT			0x0004
 
 static os_tcb_type 							mummy2_tcb;
 static u32									mummy2_stack[MUMMY2_STACK_SIZE];
 
-void mummy2_task(u32 param) 
+void mummy2_task(u32 param)
 {
-	
+
 	while(1) {
-#ifdef MUMMY_SLEEP		
+#ifdef MUMMY_SLEEP
 		u32 cnt = os_hw_timer_get_global_count();
 #ifdef OS_MUTEX
 		os_mutex_wait(&g_mutex);
@@ -172,7 +172,7 @@ void mummy2_task(u32 param)
 		os_mutex_post(&g_mutex);
 #endif
 
-#ifdef OS_SEMAPHORE		
+#ifdef OS_SEMAPHORE
 		os_sem_wait(&g_sem);
 #endif
 #ifdef OS_DELAY
@@ -183,13 +183,13 @@ void mummy2_task(u32 param)
 		os_wait_sigs(OS_SIGS_MUMMY2_TIMER_WAIT);
 		os_clr_sigs(&mummy2_tcb, OS_SIGS_MUMMY2_TIMER_WAIT);
 #endif
-#ifdef OS_SEMAPHORE		
+#ifdef OS_SEMAPHORE
 		os_sem_post(&g_sem);
 #endif
-#else		
+#else
 		printf("2");
 		for (int i=0;i<1000;i++);
-#endif		
+#endif
 	};
 
 }
@@ -197,19 +197,19 @@ void mummy2_task(u32 param)
 //------------------------------------------
 
 #define MUMMY3_STACK_SIZE					1024
-#define OS_TASK_SLICE_MUMMY3				2000
+#define OS_TASK_SLICE_MUMMY3				200
 #define OS_SIGS_MUMMY3_TIMER_WAIT			0x0008
 
 static os_tcb_type 							mummy3_tcb;
 static u32									mummy3_stack[MUMMY3_STACK_SIZE];
 
-void mummy3_task(u32 param) 
+void mummy3_task(u32 param)
 {
-	
+
 	while(1) {
-#ifdef MUMMY_SLEEP		
+#ifdef MUMMY_SLEEP
 		u32 cnt = os_hw_timer_get_global_count();
-#ifdef OS_SEMAPHORE		
+#ifdef OS_SEMAPHORE
 		os_sem_wait(&g_sem);
 #endif
 
@@ -227,14 +227,14 @@ void mummy3_task(u32 param)
 		os_set_timer(TIMER_100MS*6, OS_SIGS_MUMMY3_TIMER_WAIT);
 		os_wait_sigs(OS_SIGS_MUMMY3_TIMER_WAIT);
 		os_clr_sigs(&mummy3_tcb, OS_SIGS_MUMMY3_TIMER_WAIT);
-#endif		
-#ifdef OS_SEMAPHORE		
+#endif
+#ifdef OS_SEMAPHORE
 		os_sem_post(&g_sem);
 #endif
-#else		
+#else
 		printf("3");
 		for (int i=0;i<1000;i++);
-#endif		
+#endif
 	};
 
 }
@@ -242,19 +242,19 @@ void mummy3_task(u32 param)
 //------------------------------------------
 
 #define MUMMY4_STACK_SIZE					1024
-#define OS_TASK_SLICE_MUMMY4				2500
+#define OS_TASK_SLICE_MUMMY4				250
 #define OS_SIGS_MUMMY4_TIMER_WAIT			0x0010
 
 static os_tcb_type 							mummy4_tcb;
 static u32									mummy4_stack[MUMMY4_STACK_SIZE];
 
-void mummy4_task(u32 param) 
+void mummy4_task(u32 param)
 {
-	
+
 	while(1) {
-#ifdef MUMMY_SLEEP		
+#ifdef MUMMY_SLEEP
 		u32 cnt = os_hw_timer_get_global_count();
-#ifdef OS_SEMAPHORE		
+#ifdef OS_SEMAPHORE
 				os_sem_wait(&g_sem);
 #endif
 
@@ -273,14 +273,14 @@ void mummy4_task(u32 param)
 		os_set_timer(TIMER_100MS*8, OS_SIGS_MUMMY4_TIMER_WAIT);
 		os_wait_sigs(OS_SIGS_MUMMY4_TIMER_WAIT);
 		os_clr_sigs(&mummy4_tcb, OS_SIGS_MUMMY4_TIMER_WAIT);
-#endif		
-#ifdef OS_SEMAPHORE		
+#endif
+#ifdef OS_SEMAPHORE
 		os_sem_post(&g_sem);
-#endif		
-#else		
+#endif
+#else
 		printf("4");
 		for (int i=0;i<1000;i++);
-#endif		
+#endif
 	};
 
 }
@@ -288,17 +288,17 @@ void mummy4_task(u32 param)
 //------------------------------------------
 
 #define MUMMY5_STACK_SIZE					1024
-#define OS_TASK_SLICE_MUMMY5				3000
+#define OS_TASK_SLICE_MUMMY5				300
 #define OS_SIGS_MUMMY5_TIMER_WAIT			0x0020
 
 static os_tcb_type 							mummy5_tcb;
 static u32									mummy5_stack[MUMMY5_STACK_SIZE];
 
-void mummy5_task(u32 param) 
+void mummy5_task(u32 param)
 {
-	
+
 	while(1) {
-#ifdef MUMMY_SLEEP		
+#ifdef MUMMY_SLEEP
 		u32 cnt = os_hw_timer_get_global_count();
 #ifdef OS_MUTEX
 		os_mutex_wait(&g_mutex);
@@ -318,16 +318,16 @@ void mummy5_task(u32 param)
 		os_wait_sigs(OS_SIGS_MUMMY5_TIMER_WAIT);
 		os_clr_sigs(&mummy5_tcb, OS_SIGS_MUMMY5_TIMER_WAIT);
 #endif
-#else	
+#else
 #ifdef OS_MUTEX
 		os_mutex_wait(&g_mutex);
 #endif
 		for (int i=0;i<1000;i++)
 			printf("5");
-#ifdef OS_MUTEX		
+#ifdef OS_MUTEX
 		os_mutex_post(&g_mutex);
 #endif
-#endif		
+#endif
 	};
 
 }
@@ -340,10 +340,10 @@ void task_init()
 #ifdef OS_SEMAPHORE
 	os_sem_init(&g_sem, 2);
 #endif
-#ifdef OS_MUTEX	
+#ifdef OS_MUTEX
 	os_mutex_init(&g_mutex);
 #endif
-	
+
 	os_create_task(&dummy_tcb, dummy_stack, DUMMY_STACK_SIZE, OS_TASK_PRIO_DUMMY, OS_TASK_SLICE_DUMMY, dummy_task, 0, "dummy");
 	os_create_task(&dummy2_tcb, dummy2_stack, DUMMY2_STACK_SIZE, OS_TASK_PRIO_DUMMY2, OS_TASK_SLICE_DUMMY2, dummy2_task, 0, "dummy2");
 
