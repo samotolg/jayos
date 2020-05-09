@@ -34,7 +34,7 @@ OBJS	:= bsp/bootstrap.o	\
 	bsp/vsprintf.o			\
 	bsp/debug.o				\
 	usr/main.o				\
-	usr/task2.o				\
+	usr/task.o				\
 	os/fos.o				\
 	os/fosarm.o 			\
 	os/fos_timer.o			\
@@ -46,6 +46,9 @@ OBJS := $(patsubst %.o, $(SOURCE_TOP)/%.o, $(OBJS))
 .PHONY: all clean rebuild
 
 all: $(TARGET)
+
+run: $(TARGET)
+	qemu-system-arm -M versatilepb -kernel fos.elf -nographic
 
 rebuild: clean all
 
@@ -60,7 +63,7 @@ $(ELFS): $(OBJS) $(OBJS_LIB)
 
 $(SOURCE_TOP)/%.o: $(SOURCE_TOP)/%.c
 	$(GCC_OBJ)
-	
+
 $(SOURCE_TOP)/%.o: $(SOURCE_TOP)/%.S
 	$(ASM_OBJ)
-	
+
