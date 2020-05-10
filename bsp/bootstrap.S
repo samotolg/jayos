@@ -36,9 +36,11 @@ el1_entry:
 		MSR	vbar_el1, x1
 	
 _start:
+		// Set up stack pointer for EL1
 		adrp x0, stack_top
-		mov	sp, xo
-		bl main
+		mov	sp, x0
+
+		bl __main
 
 infinite_loop:	
 		wfi

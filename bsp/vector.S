@@ -12,7 +12,7 @@
         ------------------
         |    ESR_EL1     |
         ------------------
-        |       XZR      |
+        |    XZR (SP)    |
         ------------------
         |    ELR_EL1     |
         ------------------
@@ -123,6 +123,7 @@
 	.globl vectors
 vectors:
 	/* Current EL with SP0 */
+	/* Each entry must be aligned by 128B, which is 2 to the power 7 */
 	.align 7
 	b	_curr_el_sp0_sync		/* Synchronous */
 	.align 7

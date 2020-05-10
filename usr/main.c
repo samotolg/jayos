@@ -2,6 +2,7 @@
 #include "rtos_type.h"
 #include "fos.h"
 #include "fos_timer.h"
+#include "hal_interrupt.h"
 
 extern void task_init();
 
@@ -35,15 +36,34 @@ void idle_task(u32 param)
 /*****************************************************************************/
 
 
+/****************************************************************/
+/*                       Registers Definition                   */
+/****************************************************************/
+
+
+
+/****************************************************************/
+/*                        HW Specific Layer                     */
+/****************************************************************/
+
+
+/****************************************************************/
+
+void hw_init()
+{
+	/* GIC init */
+	hal_interrupt_init();
+	
+	/* init uart */
+	hal_uart_init();
+
+	/* init timer */
+	hal_timer_init();
+}
+
 void __main(void)
 {
-	/* init uart */
-//	uart_init();
-
-	/* GIC inititialize */
-//	intr_distributor_init();        
-//	intr_interface_init();
-//	EnableIRQ();
+	hw_init();
 
 	os_init();
 	printf("OS initialized!\n");

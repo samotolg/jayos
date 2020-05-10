@@ -2,6 +2,7 @@
 #define __BSP_H__
 
 #include "rtos_type.h"
+#include "hw.h"
 
 
 /**
