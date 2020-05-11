@@ -3,7 +3,7 @@
 #include "hw.h"
 #include "aarch64.h"
 #include "interrupt.h"
-#include "halInterrupt.h"
+#include "hal_interrupt.h"
 
 extern volatile GicCput_t* GicCpu;
 extern volatile GicDist_t* GicDist;

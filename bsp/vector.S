@@ -1,6 +1,34 @@
-.include "boot.h"
-
 .section ".text.boot"
+
+		/* AArch64 exception types*/
+		/* Current EL with SP0 */
+		.EQU 	AARCH64_EXC_SYNC_SP0,      (0x1)   /* Synchronous */
+		.EQU 	 AARCH64_EXC_IRQ_SP0,       (0x2)   /* IRQ/vIRQ */
+		.EQU 	 AARCH64_EXC_FIQ_SP0,       (0x3)   /* FIQ/vFIQ */
+		.EQU 	 AARCH64_EXC_SERR_SP0,      (0x4)   /* SError/vSError */
+		/* Current EL with SPx */
+		.EQU 	 AARCH64_EXC_SYNC_SPX,      (0x11)
+		.EQU 	 AARCH64_EXC_IRQ_SPX,       (0x12)
+		.EQU 	 AARCH64_EXC_FIQ_SPX,       (0x13)
+		.EQU 	 AARCH64_EXC_SERR_SPX,      (0x14)
+		/* Lower EL using AArch64 */
+		.EQU 	 AARCH64_EXC_SYNC_AARCH64,  (0x21)
+		.EQU 	 AARCH64_EXC_IRQ_AARCH64,   (0x22)
+		.EQU 	 AARCH64_EXC_FIQ_AARCH64,   (0x23)
+		.EQU 	 AARCH64_EXC_SERR_AARCH64,  (0x24)
+		/* Lower EL using AArch32 */
+		.EQU 	 AARCH64_EXC_SYNC_AARCH32,  (0x31)
+		.EQU 	 AARCH64_EXC_IRQ_AARCH32,   (0x32)
+		.EQU 	 AARCH64_EXC_FIQ_AARCH32,   (0x33)
+		.EQU 	 AARCH64_EXC_SERR_AARCH32,  (0x34)
+
+		/* exception_frame offset definitions */
+		.EQU 	 EXC_FRAME_SIZE, (288)	/* sizeof(struct _exception_frame) */
+		.EQU 	 EXC_EXC_TYPE_OFFSET, (0)	/* __asm_offsetof(struct _exception_frame, exc_type) */
+		.EQU 	 EXC_EXC_ESR_OFFSET, (8)	/* __asm_offsetof(struct _exception_frame, exc_esr) */
+		.EQU 	 EXC_EXC_SP_OFFSET, (16)	/* __asm_offsetof(struct _exception_frame, exc_sp) */
+		.EQU 	 EXC_EXC_ELR_OFFSET, (24)	/* __asm_offsetof(struct _exception_frame, exc_elr) */
+		.EQU 	 EXC_EXC_SPSR_OFFSET, (32)/* __asm_offsetof(struct _exception_frame, exc_spsr) */
 
 /*
 	When exception occurs, it stores the contents of general registers 

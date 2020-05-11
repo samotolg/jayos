@@ -1,4 +1,5 @@
 .global _bootup
+	
 _bootup:
 		// Initialize SCTLR_EL2 and HCR_EL2 to save values before entering EL2.
 		MSR SCTLR_EL2, XZR
@@ -46,32 +47,3 @@ infinite_loop:
 		wfi
 		b infinite_loop
 
-
-
-// Need to remove below		
-interrupt_table:
-		ldr pc,	reset_handler_address
-		ldr pc, undef_handler_address;
-		ldr pc, swi_handler_address;
-		ldr pc, prefetch_abort_handler_address;
-		ldr pc, data_abort_handler_address;
-		nop
-		ldr pc, irq_handler_address
-		ldr pc, fiq_handler_address;
-	
-reset_handler_address: 
-		.word	reset_handler
-undef_handler_address: 
-		.word	infinite_loop
-swi_handler_address:   
-		.word	infinite_loop
-prefetch_abort_handler_address:	
-		.word	infinite_loop
-data_abort_handler_address:	
-		.word	infinite_loop
-irq_handler_address: 
-		.word	irq_handler
-fiq_handler_address: 
-		.word	infinite_loop
-
-interrupt_table_end:	

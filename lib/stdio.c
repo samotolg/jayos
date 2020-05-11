@@ -1,5 +1,6 @@
 #include "stdio.h"
-#include "halUart.h"
+#include "rtos_type.h"
+#include "hal_uart.h"
 
 #define PRINTF_BUF_LEN 1024
 
@@ -38,6 +39,17 @@ uint32_t debug_printf(const char* format, ...)
 
     return putstr(sPrintf_buf);
 }
+
+uint32_t printf(const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    vsprintf(sPrintf_buf, format, args);
+    va_end(args);
+
+    return putstr(sPrintf_buf);
+}
+
 
 uint32_t vsprintf(char* buf, const char* format, va_list arg)
 {

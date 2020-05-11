@@ -6,46 +6,99 @@
 .extern	os_cur_task
 .extern os_schedule_lock
 
-.equ	PSR_MODE_MASK,			0x1F
-.equ	PSR_MODE_SVC,			0x13
-.equ	PSR_MODE_IRQ,			0x12
-.equ	PSR_IRQ_MASK,			0x80
-.equ	PSR_FIQ_MASK,			0x40
-.equ	CONTEXT_FRAME_SIZE,		0x40
-.equ	PSR_IF_BIT_MASK,		0xC0
+	.EQU	DAIF_DBG_BIT,		(1<<3)
+	.EQU	DAIF_ABT_BIT,		(1<<2)
+	.EQU	DAIF_IRQ_BIT,		(1<<1)
+	.EQU	DAIF_FIQ_BIT,		(1<<0)
 
-#define PSR_IRQ_MASK			0x80
-#define PSR_FIQ_MASK			0x40
-
-
-
-	.EQU	DAIF_DBG_BIT		(1<<3)
-	.EQU	DAIF_ABT_BIT		(1<<2)
-	.EQU	DAIF_IRQ_BIT		(1<<1)
-	.EQU	DAIF_FIQ_BIT		(1<<0)
-
-.align	4
+.align	8
 .text
+
+/*-------------------------------------------------------------------
+    Save Context Prior to Context Switching
+   Low  -------------
+	    |  ELR_EL1  |
+        -------------
+	    |  SPSR_EL1 |
+        -------------
+	    |    X0     |
+	    -------------
+             ...   
+             ...
+	    -------------
+	    |    X29    |
+	    -------------
+	    |    X30    |
+        -------------
+        |    XZR    |
+   High -------------
+--------------------------------------------------------------------*/
+.macro save_context
+	stp x30, xzr, [sp, #-16]!
+	stp x28, x29, [sp, #-16]!
+	stp x26, x27, [sp, #-16]!
+	stp x24, x25, [sp, #-16]!
+	stp x22, x23, [sp, #-16]!
+	stp x20, x21, [sp, #-16]!
+	stp x18, x19, [sp, #-16]!
+	stp x16, x17, [sp, #-16]!
+	stp x14, x15, [sp, #-16]!
+	stp x12, x13, [sp, #-16]!
+	stp x10, x11, [sp, #-16]!
+	stp x8, x9, [sp, #-16]!
+	stp x6, x7, [sp, #-16]!
+	stp x4, x5, [sp, #-16]!
+	stp x2, x3, [sp, #-16]!
+	stp x0, x1, [sp, #-16]!
+
+	mrs x4, elr_el1				/* save ELR_EL1						*/
+	mrs x5, spsr_el1			/* save SPSR_EL1					*/
+	stp x4, x5, [sp, #-16]!
+.endm
+
+.macro restore_context
+	ldp x4, x5, [sp], #16
+	msr elr_el1, x4				/* restore ELR_EL1                  */
+	msr spsr_el1, x5			/* restore SPSR_EL1                 */
+	ldp x0, x1, [sp], #16
+	ldp x2, x3, [sp], #16
+	ldp x4, x5, [sp], #16
+	ldp x6, x7, [sp], #16
+	ldp x8, x9, [sp], #16
+	ldp x10, x11, [sp], #16
+	ldp x12, x13, [sp], #16
+	ldp x14, x15, [sp], #16
+	ldp x16, x17, [sp], #16
+	ldp x18, x19, [sp], #16
+	ldp x20, x21, [sp], #16
+	ldp x22, x23, [sp], #16
+	ldp x24, x25, [sp], #16
+	ldp x26, x27, [sp], #16
+	ldp x28, x29, [sp], #16
+	ldp x30, xzr, [sp], #16
+.endm
+
 
 os_schedule:
 /*------------------------------------------------------------------
     Disable IRQ/FIQ
 ------------------------------------------------------------------*/
-	msr		DAIFSet, #DAIF_IRQ_BIT | #DAIF_FIQ_BIT
+	msr		DAIFSet, #(DAIF_IRQ_BIT|DAIF_FIQ_BIT)
 
 /*------------------------------------------------------------------
-; If not in supervisor mode, just return
+; If in IRQ mode, context switching is not allowed and just return
 ;------------------------------------------------------------------*/
-	//and 	a1, a3, #PSR_MODE_MASK
-	//cmp		a1, #PSR_MODE_SVC
-	//bne		os_schedule_exit
-
+	mrs 	x1, DAIF
+	and		x1, x1, #DAIF_IRQ_BIT
+	cmp		X1, #1
+	beq		os_schedule_exit
+	
 /*------------------------------------------------------------------
 ; If schedule is locked, just return
 ;------------------------------------------------------------------*/
-	ldr		w2, =os_schedule_lock
-	ldr		w2, [w2]
-	cmp		a2, #0
+	ldr		x2, =os_schedule_lock
+	ldr		x2, [x2]
+	cmp		x2, #0
 	bne		os_schedule_exit
 
 /*------------------------------------------------------------------
@@ -62,119 +115,47 @@ os_schedule:
 ; Set the best task as current task
 ;------------------------------------------------------------------*/
 	str		x2, [x3]			/* set the best task as current task */
-	mov		x4, x1				/* the last task is a4. need to store context *
+	mov		x4, x1				/* the last task is x4. need to store context *
 
 /*------------------------------------------------------------------
 ; Save the context frame
 ;------------------------------------------------------------------*/
-	stmfd	sp!, {lr}				/* store return address */
-	sub		sp, sp, #8			/* r12, r14 are not reserved after function call */
-	stmfd	sp!, {r4-r11}			/* store r4 ~ r11 */
-	sub		sp, sp, #16			/* r0 ~ r3 are not reserved after function call */
-	stmfd	sp!, {a3}				/* CPSR is stored in a3 */
-	str		sp, [a4]			/* Finally store stack pointer */
-
+	save_context
+	ldr		x0, =os_cur_task
+	ldr		x0, [x0]
+	mov		x1, sp
+	str		x12, [x0]
+	
 /*------------------------------------------------------------------
 ; Perform context switching
 ;------------------------------------------------------------------*/
-	mov		a1, a2				/* a1 is best task and need to be run */
-	ldr		sp, [a1]			/* stack pointer is changed to new task */
-	ldmfd	sp!, {a1}				/* a1 holds SPSR */
-	msr		SPSR_cxf, a1			/* restore SPSR value */
-	mov		a1, sp
-	add		sp, sp, #CONTEXT_FRAME_SIZE - 4
-	ldmfd	a1, {r0-r12, r14, pc}^	/* restore registers */
+	mov		x1, x2				/* x1 is best task and need to be run */
+	mov		x3, sp
+	ldr		x3, [x1]			/* stack pointer is changed to new task */
+	restore_context
+	ret
 
 os_schedule_exit:
 /*------------------------------------------------------------------
     Enable IRQ/FIQ and schedule return without context switching
 ------------------------------------------------------------------*/
-	msr 	DAIFClr, #DAIF_IRQ_BIT | #DAIF_FIQ_BIT
+	msr 	DAIFClr, #(DAIF_IRQ_BIT|DAIF_FIQ_BIT)
 	ret
-	
-
-
-os_schedule:
-/*------------------------------------------------------------------
-   Save CPSR and disable IRQ/FIQ
-------------------------------------------------------------------*/
-	mrs		a3, CPSR
-	orr		a1, a3, #PSR_IF_BIT_MASK
-	msr		CPSR_c, a1
-
-/*------------------------------------------------------------------
-; If not in supervisor mode, just return
-;------------------------------------------------------------------*/
-	and 	a1, a3, #PSR_MODE_MASK
-	cmp		a1, #PSR_MODE_SVC
-	bne		os_schedule_exit
-
-/*------------------------------------------------------------------
-; If schedule is locked, just return
-;------------------------------------------------------------------*/
-	ldr		a2, =os_schedule_lock
-	ldr		a2, [a2]
-	cmp		a2, #0
-	bne		os_schedule_exit
-
-/*------------------------------------------------------------------
-; If os_best_task = os_cur_task, just return
-;------------------------------------------------------------------*/
-	ldr		a2, =os_best_task
-	ldr		a2, [a2]
-	ldr		a4, =os_cur_task
-	ldr		a1, [a4]
-	cmp		a2, a1
-	beq		os_schedule_exit
-
-/*------------------------------------------------------------------
-; Set the best task as current task
-;------------------------------------------------------------------*/
-	str		a2, [a4]			/* set the best task as current task */
-	mov		a4, a1				/* the last task is a4. need to store context *
-	
-
-/*------------------------------------------------------------------
-; Save the context frame
-;------------------------------------------------------------------*/
-	stmfd	sp!, {lr}				/* store return address */
-	sub		sp, sp, #8			/* r12, r14 are not reserved after function call */
-	stmfd	sp!, {r4-r11}			/* store r4 ~ r11 */
-	sub		sp, sp, #16			/* r0 ~ r3 are not reserved after function call */
-	stmfd	sp!, {a3}				/* CPSR is stored in a3 */
-	str		sp, [a4]			/* Finally store stack pointer */
-
-/*------------------------------------------------------------------
-; Perform context switching
-;------------------------------------------------------------------*/
-	mov		a1, a2				/* a1 is best task and need to be run */
-	ldr		sp, [a1]			/* stack pointer is changed to new task */
-	ldmfd	sp!, {a1}				/* a1 holds SPSR */
-	msr		SPSR_cxf, a1			/* restore SPSR value */
-	mov		a1, sp
-	add		sp, sp, #CONTEXT_FRAME_SIZE - 4
-	ldmfd	a1, {r0-r12, r14, pc}^	/* restore registers */
-
-/*------------------------------------------------------------------
-; Schedule return without context switching
-;------------------------------------------------------------------*/
-os_schedule_exit:
-	msr		CPSR_f, a3
-	msr		CPSR_c, a3
-	bx		lr
 
 os_int_lock:
-	mrs		a1, cpsr
-	orr		a2, a1, #PSR_IRQ_MASK
-	msr		cpsr_c, a2
-	and		a1, a1, #PSR_IRQ_MASK	/* if irq or fiq is locked, return none zero value */
-	bx		lr
+/*------------------------------------------------------------------
+    Disable IRQ and return the IRQ status prior to disabling IRQ
+------------------------------------------------------------------*/
+	mrs		x0, DAIF
+	and		x0, x0, #DAIF_IRQ_BIT
+	msr		DAIFSet,  #DAIF_IRQ_BIT
+	ret
 
 os_int_free:
-	mrs		a1, cpsr
-	bic		a2, a1, #PSR_IRQ_MASK
-	msr		cpsr_c, a2
-	and		a1, a1, #PSR_IRQ_MASK
-	bx		lr
-	
-.end	
+/*------------------------------------------------------------------
+    Enable IRQ and return the IRQ status prior to enabling IRQ
+------------------------------------------------------------------*/
+	mrs		x0, DAIF
+	and		x0, x0, #DAIF_IRQ_BIT
+	msr		DAIFClr, #DAIF_IRQ_BIT
+	ret

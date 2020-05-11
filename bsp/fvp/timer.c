@@ -1,8 +1,8 @@
 #include "stdio.h"
 #include "stdint.h"
 #include "aarch64.h"
-#include "halInterrupt.h"
-#include "halTimer.h"
+#include "hal_interrupt.h"
+#include "hal_timer.h"
 #include "timer.h"
 
 static void interrupt_handler(void);
