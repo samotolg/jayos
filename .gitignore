@@ -3,3 +3,9 @@
 *.bin
 *.map
 
+.cproject
+.project
+.settings/
+jayos.launch
+
+/ads_build/
