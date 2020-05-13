@@ -46,13 +46,13 @@ typedef u8                      BYTE;
 
 typedef s16                     SHORT;          /* 16bit integer */
 typedef u16                     USHORT;
-typedef u16                     WORD;
-typedef u16                     WCHAR;
+typedef u32                     WORD;
+typedef u32                     WCHAR;
 
-typedef s32                     LONG;           /* 32bit integer */
-typedef u32                     ULONG;
-typedef u32                     DWORD;
-typedef u32                     UINT;
+typedef s64                     LONG;           /* 32bit integer */
+typedef u64                     ULONG;
+typedef u64                     DWORD;
+typedef u64                     UINT;
 
 
 typedef unsigned long           dword;                          /* Unsigned 32 bit value type. */

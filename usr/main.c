@@ -25,10 +25,10 @@ extern void task_init();
 #define OS_TASK_PRIO_IDLE					255
 #define OS_TASK_SLICE_IDLE					1000
 
-static u32									idle_stack[IDLE_STACK_SIZE];
+static u64									idle_stack[IDLE_STACK_SIZE];
 static os_tcb_type 							idle_tcb;
 
-void idle_task(u32 param) 
+void idle_task(u64 param) 
 {
 	while(1);
 }

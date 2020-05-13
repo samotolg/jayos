@@ -30,10 +30,31 @@ typedef unsigned int						os_sig_type;
 
 typedef enum {OS_STOP, OS_RUN} 				os_status_type;
 
+/*-------------------------------------------------------------------
+Context Frame Struct
+		   Low  -------------
+			    |  ELR_EL1  |
+		        -------------
+			    |  SPSR_EL1 |
+		        -------------
+			    |    X0     |
+			    -------------
+		             ...   
+		             ...
+			    -------------
+			    |    X29    |
+			    -------------
+			    |    LR     |
+		        -------------
+		        |    XZR    |
+		   High -------------
+--------------------------------------------------------------------*/
 typedef struct context_frame_struct {
-	u32							spsr;
-	u32							r[14];		// r0~r12, r13 
-	u32							lr;
+	u64							elr;
+	u64							spsr;
+	u64							x[30];		// x0 ~ x29 
+	u64							lr;			// x30 (= link register)
+	u64							xzr;		// padding for aligning quadword
 } 											os_context_frame_type;
 
 typedef void 								(*os_task_func_type)( u32 );
@@ -48,8 +69,8 @@ typedef struct 								os_tcb_link_struct {
 #define	TASK_NAME_MAX_LEN					10
 
 typedef struct os_tcb_struct {
-	u32							*sp;
-	u32							*stack_limit;
+	u64							*sp;
+	u64							*stack_limit;
 	u32							slices;
 	os_prio_type				prio;
 	os_sig_type					sigs;
@@ -74,8 +95,6 @@ typedef struct os_tcb_struct {
 	os_prio_type				prio_org;
 #endif
 #endif
-
-
 } 						os_tcb_type;
 
 
@@ -132,7 +151,7 @@ void 			os_create_task(
 						u32		 				prio,
 						u32						slices,
 						os_task_func_type 		p_task,
-						u32						param,
+						u64						param,
 						char					*name);
 os_sig_type		os_set_sigs(os_tcb_type *p_tcb, os_sig_type sigs);
 os_sig_type 	os_wait_sigs(os_sig_type sigs);
@@ -142,6 +161,6 @@ void			os_delay(u32 timer);
 void		 	os_set_status(os_tcb_type *p_task);
 
 
-extern u32 		os_schedule_lock;
+extern u64 		os_schedule_lock;
 
 #endif //JAYOS_H

@@ -5,7 +5,8 @@
 
 /* http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0271d/index.html */
 //#define TIMER_OFFSET 			((volatile unsigned int*)0x101E2000
-#define TIMER_OFFSET 			0x101E2000
+
+#define TIMER_OFFSET 			0x1c110000
 #define TIMER_GAP				0x20
 
 #define TIMER_LOAD(ch)			(volatile unsigned int *)(TIMER_OFFSET + (TIMER_GAP*ch) + 0x0)
@@ -36,6 +37,8 @@
 
 #define OS_ROUND_ROBIN_CHANNEL								0
 #define OS_TIMER_CHANNEL									1
+
+#define TIMER_INTERRUPT          34
 
 
 typedef void (*timer_cb_func_type)( int );

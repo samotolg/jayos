@@ -22,12 +22,12 @@ os_timer_type								*os_active_timer_list;
 u8											os_active_timer_count;
 os_timer_type								*os_idle_timer_list;
 os_timer_type								os_timer[OS_TIMER_MAX];
-u32											os_timer_count;
-u32											os_schedule_lock;
+u64											os_timer_count;
+u64											os_schedule_lock;
 #ifdef OS_SCHEDULE_ROUND_ROBIN
 bool										os_enable_rr;
 #endif
-u32											os_err_count;
+u64											os_err_count;
 
 /******************************************************************************
                       Stack Address
@@ -36,13 +36,13 @@ u32											os_err_count;
 #define IRQ_STACK_SIZ				1024
 #define EXP_STACK_SIZ				32
 
-u32 svc_stack[SVC_STACK_SIZ];
-u32 irq_stack[IRQ_STACK_SIZ];
-u32	exp_stack[EXP_STACK_SIZ];
+u64 svc_stack[SVC_STACK_SIZ];
+u64 irq_stack[IRQ_STACK_SIZ];
+u64	exp_stack[EXP_STACK_SIZ];
 
-u32 *svc_stack_top = (u32 *)(svc_stack + (SVC_STACK_SIZ - 1) * 4);
-u32 *irq_stack_top = (u32 *)(irq_stack + (IRQ_STACK_SIZ - 1) * 4);
-u32 *exp_stack_top = (u32 *)(exp_stack + (EXP_STACK_SIZ - 1) * 4);
+u64 *svc_stack_top = (u32 *)(svc_stack + (SVC_STACK_SIZ - 1) * 4);
+u64 *irq_stack_top = (u32 *)(irq_stack + (IRQ_STACK_SIZ - 1) * 4);
+u64 *exp_stack_top = (u32 *)(exp_stack + (EXP_STACK_SIZ - 1) * 4);
 
 
 
@@ -140,7 +140,7 @@ void os_start()
  	This function will start each task.
  
 ******************************************************************************/
-void os_task_start(void (*func)(u32 param), u32 param)
+void os_task_start(void (*func)(u64 param), u32 param)
 {
 	func(param);
 
@@ -411,22 +411,23 @@ void os_create_task(
 	u32		 				prio,
 	u32						slices,
 	os_task_func_type 		p_task,
-	u32						param,
+	u64						param,
 	char					*name)
 {
 	os_stack_type			*sp;
 	os_context_frame_type  *cft;
 	short					pos = 0;
 
-	sp = (u32*)((u32)p_stack + stack_size * sizeof(u32));
+	sp = (u64*)((u64)p_stack + stack_size * sizeof(u64));
 
 	sp -= sizeof(os_context_frame_type);
 
 	cft 					= (os_context_frame_type*)sp;
 	cft->spsr 				= PSR_MODE_SVC;
-	cft->r[0] 				= (u32)p_task;
-	cft->r[1] 				= param;
-	cft->lr 				= (u32)os_task_start;
+	cft->x[0] 				= (u64)p_task;
+	cft->x[1] 				= param;
+	cft->lr 				= (u64)os_task_start;
+	cft->xzr				= (u64)sp;
 
 	p_tcb->sp				= sp;
 	p_tcb->stack_limit		= p_stack;

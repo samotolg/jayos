@@ -41,6 +41,9 @@ _start:
 		adrp x0, stack_top
 		mov	sp, x0
 
+		mov x0, #(3 << 20)  // Enable floating point(library)
+		msr CPACR_EL1, x0
+
 		bl __main
 
 infinite_loop:	

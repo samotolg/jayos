@@ -28,7 +28,7 @@
 	    -------------
 	    |    X29    |
 	    -------------
-	    |    X30    |
+	    |  X30(LR)  |
         -------------
         |    XZR    |
    High -------------
@@ -51,15 +51,15 @@
 	stp x2, x3, [sp, #-16]!
 	stp x0, x1, [sp, #-16]!
 
-	mrs x4, elr_el1				/* save ELR_EL1						*/
-	mrs x5, spsr_el1			/* save SPSR_EL1					*/
-	stp x4, x5, [sp, #-16]!
+	mrs x0, elr_el1				/* save ELR_EL1						*/
+	mrs x1, spsr_el1			/* save SPSR_EL1					*/
+	stp x0, x1, [sp, #-16]!
 .endm
 
 .macro restore_context
-	ldp x4, x5, [sp], #16
-	msr elr_el1, x4				/* restore ELR_EL1                  */
-	msr spsr_el1, x5			/* restore SPSR_EL1                 */
+	ldp x0, x1, [sp], #16
+	msr elr_el1, x0				/* restore ELR_EL1                  */
+	msr spsr_el1, x1			/* restore SPSR_EL1                 */
 	ldp x0, x1, [sp], #16
 	ldp x2, x3, [sp], #16
 	ldp x4, x5, [sp], #16
@@ -121,17 +121,18 @@ os_schedule:
 ; Save the context frame
 ;------------------------------------------------------------------*/
 	save_context
-	ldr		x0, =os_cur_task
-	ldr		x0, [x0]
+	cmp 	x4, #0
+	beq		context_switch
 	mov		x1, sp
-	str		x12, [x0]
+	str		x1, [x4]			/* save stack point in the last task */
 	
 /*------------------------------------------------------------------
 ; Perform context switching
 ;------------------------------------------------------------------*/
+context_switch:
 	mov		x1, x2				/* x1 is best task and need to be run */
-	mov		x3, sp
 	ldr		x3, [x1]			/* stack pointer is changed to new task */
+	mov		sp, x3
 	restore_context
 	ret
 

@@ -14,25 +14,25 @@
 
 
 /* Define the ThreadX object control blocks...  */
-static os_tcb_type 							thread_0;
-static os_tcb_type 							thread_1;
-static os_tcb_type 							thread_2;
-static os_tcb_type 							thread_3;
-static os_tcb_type 							thread_4;
-static os_tcb_type 							thread_5;
-static os_tcb_type 							thread_6;
-static os_tcb_type 							thread_7;
-os_sem_type									semaphore_0;
-os_mutex_type								mutex_0;
+static os_tcb_type 				thread_0 __attribute__((aligned (16)));
+static os_tcb_type 				thread_1 __attribute__((aligned (16)));
+static os_tcb_type 				thread_2 __attribute__((aligned (16)));
+static os_tcb_type 				thread_3 __attribute__((aligned (16)));
+static os_tcb_type 				thread_4 __attribute__((aligned (16)));
+static os_tcb_type 				thread_5 __attribute__((aligned (16)));
+static os_tcb_type 				thread_6 __attribute__((aligned (16)));
+static os_tcb_type 				thread_7 __attribute__((aligned (16)));
+os_sem_type						semaphore_0;
+os_mutex_type					mutex_0;
 
-static u32									thread_0_stack[DEMO_STACK_SIZE];
-static u32									thread_1_stack[DEMO_STACK_SIZE];
-static u32									thread_2_stack[DEMO_STACK_SIZE];
-static u32									thread_3_stack[DEMO_STACK_SIZE];
-static u32									thread_4_stack[DEMO_STACK_SIZE];
-static u32									thread_5_stack[DEMO_STACK_SIZE];
-static u32									thread_6_stack[DEMO_STACK_SIZE];
-static u32									thread_7_stack[DEMO_STACK_SIZE];
+static u64						thread_0_stack[DEMO_STACK_SIZE] __attribute__((aligned (16)));
+static u64						thread_1_stack[DEMO_STACK_SIZE] __attribute__((aligned (16)));
+static u64						thread_2_stack[DEMO_STACK_SIZE] __attribute__((aligned (16)));
+static u64						thread_3_stack[DEMO_STACK_SIZE] __attribute__((aligned (16)));
+static u64						thread_4_stack[DEMO_STACK_SIZE] __attribute__((aligned (16)));
+static u64						thread_5_stack[DEMO_STACK_SIZE] __attribute__((aligned (16)));
+static u64						thread_6_stack[DEMO_STACK_SIZE] __attribute__((aligned (16)));
+static u64						thread_7_stack[DEMO_STACK_SIZE] __attribute__((aligned (16)));
 
 #define	TX_NO_TIME_SLICE					100
 

@@ -30,9 +30,9 @@ static os_mutex_type							g_mutex;
 #define OS_SIGS_DUMMY_TIMER_WAIT			0x0001
 
 static os_tcb_type 							dummy_tcb;
-static u32									dummy_stack[DUMMY_STACK_SIZE];
+static u64									dummy_stack[DUMMY_STACK_SIZE];
 
-void dummy_task(u32 param)
+void dummy_task(u64 param)
 {
 	while(1) {
 #ifdef OS_MUTEX
@@ -62,9 +62,9 @@ void dummy_task(u32 param)
 #define OS_SIGS_DUMMY2_TIMER_WAIT			0x0040
 
 static os_tcb_type 							dummy2_tcb;
-static u32									dummy2_stack[DUMMY2_STACK_SIZE];
+static u64									dummy2_stack[DUMMY2_STACK_SIZE];
 
-void dummy2_task(u32 param)
+void dummy2_task(u64 param)
 {
 	while(1) {
 #ifdef OS_SEMAPHORE
@@ -110,9 +110,9 @@ void dummy2_task(u32 param)
 #define OS_SIGS_MUMMY_TIMER_WAIT			0x0002
 
 static os_tcb_type 							mummy_tcb;
-static u32									mummy_stack[MUMMY_STACK_SIZE];
+static u64									mummy_stack[MUMMY_STACK_SIZE];
 
-void mummy_task(u32 param)
+void mummy_task(u64 param)
 {
 	while(1) {
 #ifdef MUMMY_SLEEP
@@ -155,9 +155,9 @@ void mummy_task(u32 param)
 #define OS_SIGS_MUMMY2_TIMER_WAIT			0x0004
 
 static os_tcb_type 							mummy2_tcb;
-static u32									mummy2_stack[MUMMY2_STACK_SIZE];
+static u64									mummy2_stack[MUMMY2_STACK_SIZE];
 
-void mummy2_task(u32 param)
+void mummy2_task(u64 param)
 {
 
 	while(1) {
@@ -201,9 +201,9 @@ void mummy2_task(u32 param)
 #define OS_SIGS_MUMMY3_TIMER_WAIT			0x0008
 
 static os_tcb_type 							mummy3_tcb;
-static u32									mummy3_stack[MUMMY3_STACK_SIZE];
+static u64									mummy3_stack[MUMMY3_STACK_SIZE];
 
-void mummy3_task(u32 param)
+void mummy3_task(u64 param)
 {
 
 	while(1) {
@@ -246,9 +246,9 @@ void mummy3_task(u32 param)
 #define OS_SIGS_MUMMY4_TIMER_WAIT			0x0010
 
 static os_tcb_type 							mummy4_tcb;
-static u32									mummy4_stack[MUMMY4_STACK_SIZE];
+static u64									mummy4_stack[MUMMY4_STACK_SIZE];
 
-void mummy4_task(u32 param)
+void mummy4_task(u64 param)
 {
 
 	while(1) {
@@ -292,9 +292,9 @@ void mummy4_task(u32 param)
 #define OS_SIGS_MUMMY5_TIMER_WAIT			0x0020
 
 static os_tcb_type 							mummy5_tcb;
-static u32									mummy5_stack[MUMMY5_STACK_SIZE];
+static u64									mummy5_stack[MUMMY5_STACK_SIZE];
 
-void mummy5_task(u32 param)
+void mummy5_task(u64 param)
 {
 
 	while(1) {
