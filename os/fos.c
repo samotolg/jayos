@@ -423,7 +423,7 @@ void os_create_task(
 	sp -= sizeof(os_context_frame_type);
 
 	cft 					= (os_context_frame_type*)sp;
-	cft->spsr 				= PSR_MODE_SVC;
+	cft->spsr 				= 0x00;  // NZCV and DAIF bits are all cleared
 	cft->x[0] 				= (u64)p_task;
 	cft->x[1] 				= param;
 	cft->lr 				= (u64)os_task_start;

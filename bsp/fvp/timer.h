@@ -6,7 +6,7 @@
 static uint32_t cntfrq;		/* System frequency */
 
 //#define TIMER_INTERRUPT          27
-#define TIMER_INTERRUPT          34
+#define TIMER_INTERRUPT          57
 
 
 /* CNTV_CTL_EL0, Counter-timer Virtual Timer Control register */

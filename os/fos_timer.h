@@ -38,7 +38,7 @@
 #define OS_ROUND_ROBIN_CHANNEL								0
 #define OS_TIMER_CHANNEL									1
 
-#define TIMER_INTERRUPT          34
+#define TIMER_INTERRUPT          57// 29
 
 
 typedef void (*timer_cb_func_type)( int );

@@ -1,5 +1,6 @@
 .global _bootup
-	
+
+		.EQU		CNTANSR,	0x2a810004
 _bootup:
 		// Initialize SCTLR_EL2 and HCR_EL2 to save values before entering EL2.
 		MSR SCTLR_EL2, XZR
@@ -8,13 +9,28 @@ _bootup:
 		// Determine the EL2 Execution state.
 		MRS X0, SCR_EL3
 		ORR X0, X0, #(1<<10) // RW EL2 Execution state is AArch64.
+		B _goto_sel1
+
+_goto_sel1:
+		MSR SCR_EL3, x0
+		
+		MOV X0, #0b0101
+		MSR SPSR_EL3, X0 // M[4:0]=00101 EL1h must match SCR_EL3.RW
+		ADR X0, el1_entry // el1_entry points to the first instruction of
+		MSR ELR_EL3, X0 // EL1 code.
+
+		ERET
+
+_goto_nsel2:
 		ORR X0, X0, #(1<<0) // NS EL1 is Non-secure world.
 		MSR SCR_EL3, x0
+		
 		MOV X0, #0b01001 // DAIF=0000
-		MSR SPSR_EL3, X0 // M[4:0]=01001 EL2h must match SCR_EL3.RW
+		MSR SPSR_EL3, X0 // M[4:0]=01001 EL1h must match SCR_EL3.RW
 		
 		// Determine EL2 entry.
 		ADR X0, el2_entry // el2_entry points to the first instruction of
+		//ADR X0, el1_entry // el1_entry points to the first instruction of
 		MSR ELR_EL3, X0 // EL2 code.
 		ERET
 
@@ -30,6 +46,7 @@ el2_entry:
 		MSR SPSR_EL2, X0 // M[4:0]=00101 EL1h must match HCR_EL2.RW.
 		ADR X0, el1_entry // el1_entry points to the first instruction of
 		MSR ELR_EL2, X0 // EL1 code.
+
 		ERET
 
 el1_entry:

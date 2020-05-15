@@ -51,15 +51,21 @@
 	stp x2, x3, [sp, #-16]!
 	stp x0, x1, [sp, #-16]!
 
-	mrs x0, elr_el1				/* save ELR_EL1						*/
-	mrs x1, spsr_el1			/* save SPSR_EL1					*/
+	// This function will be called in not interrupt handler context
+	// We don't need to store ELR or SPSR, but Other Status such as NZCV or DAIF
+	//mrs x0, elr_el1				/* save ELR_EL1						*/
+	//mrs x1, spsr_el1			/* save SPSR_EL1					*/
+	mrs x0, NZCV
+	mrs x1, DAIF
 	stp x0, x1, [sp, #-16]!
 .endm
 
 .macro restore_context
 	ldp x0, x1, [sp], #16
-	msr elr_el1, x0				/* restore ELR_EL1                  */
-	msr spsr_el1, x1			/* restore SPSR_EL1                 */
+	msr NZCV, x0
+	msr DAIF, x1
+	//msr elr_el1, x0				/* restore ELR_EL1                  */
+	//msr spsr_el1, x1			/* restore SPSR_EL1                 */
 	ldp x0, x1, [sp], #16
 	ldp x2, x3, [sp], #16
 	ldp x4, x5, [sp], #16
@@ -83,8 +89,14 @@ os_schedule:
 /*------------------------------------------------------------------
     Disable IRQ/FIQ
 ------------------------------------------------------------------*/
-	msr		DAIFSet, #(DAIF_IRQ_BIT|DAIF_FIQ_BIT)
-
+/*	msr		DAIFSet, #(DAIF_IRQ_BIT|DAIF_FIQ_BIT)
+	MOV		x1, 0
+	MOVK	x1, #0x1c01, LSL #16
+	ORR		x1, x1, 0x08
+	LDR		w2, [x1, #0]
+	ORR		w2, w2, #0x80
+	STR		w2, [x1, #0]
+*/
 /*------------------------------------------------------------------
 ; If in IRQ mode, context switching is not allowed and just return
 ;------------------------------------------------------------------*/
@@ -148,8 +160,14 @@ os_int_lock:
     Disable IRQ and return the IRQ status prior to disabling IRQ
 ------------------------------------------------------------------*/
 	mrs		x0, DAIF
-	and		x0, x0, #DAIF_IRQ_BIT
+	and		x0, x0, #(DAIF_IRQ_BIT << 6)
 	msr		DAIFSet,  #DAIF_IRQ_BIT
+	MOV		x1, 0
+	MOVK	x1, #0x1c01, LSL #16
+	ORR		x1, x1, 0x08
+	LDR		w2, [x1, #0]
+	ORR		w2, w2, #0x80
+	STR		w2, [x1, #0]
 	ret
 
 os_int_free:
@@ -157,6 +175,12 @@ os_int_free:
     Enable IRQ and return the IRQ status prior to enabling IRQ
 ------------------------------------------------------------------*/
 	mrs		x0, DAIF
-	and		x0, x0, #DAIF_IRQ_BIT
+	and		x0, x0, #(DAIF_IRQ_BIT << 6)
 	msr		DAIFClr, #DAIF_IRQ_BIT
+	MOV		x1, 0
+	MOVK	x1, #0x1c01, LSL #16
+	ORR		x1, x1, 0x08
+	LDR		w2, [x1, #0]
+	BIC		w2, w2, #0x80
+	STR		w2, [x1, #0]
 	ret
